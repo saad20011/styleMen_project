@@ -44,7 +44,8 @@ use App\Http\Controllers\SupplierOrderController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::post('register', [RegisterController::class, 'register']);
+Route::post('register_new_user', [RegisterController::class, 'register_new_user']);
+Route::post('register_new_account', [RegisterController::class, 'register_new_account']);
 Route::post('login', [RegisterController::class, 'login']);
 // Route::resource('phoneType', PhoneTypeController::class);
 

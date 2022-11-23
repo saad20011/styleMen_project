@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\source;
-use App\Models\account_user;
 use Auth;
 use Validator;
 use DB;
@@ -12,7 +11,10 @@ class sourceController extends Controller
 {
     public function index(Request $request)
     {
-        $sources = source::get();
+        $account_user = account_user::where('user_id',Auth::user()->id)
+            ->first(['account_id','user_id']);
+        $supplier_billings = source::where('account_id', $account_user->account_id)
+            ->get();
 
         return response()->json([
             'statut' => 1,
@@ -38,10 +40,16 @@ class sourceController extends Controller
                 'Validation Error', $validator->errors()
             ]);       
         };
-
+        $account_user = DB::table('account_users')
+            ->join('users','users.id', '=', 'account_users.user_id')
+            ->join('accounts','accounts.id', '=', 'account_users.account_id')
+            ->where('users.id',Auth::user()->id)
+            ->select('accounts.name as account_name',
+                    'accounts.id as account_id',
+                    'users.id as user_id'
+            )->first();
         $account_user = account_user::where('user_id',Auth::user()->id)
             ->first(['account_id','user_id']);
-            
         $source_only = collect($request->only('title','website','email','photo','photo_dir','statut'))
             ->put('account_id',$account_user->account_id)->all();
         $source = source::create($source_only);

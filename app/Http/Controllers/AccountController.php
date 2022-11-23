@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\account;
 use Illuminate\Http\Request;
-
+use Validator;
 class AccountController extends Controller
 {
 
@@ -26,19 +26,24 @@ class AccountController extends Controller
 
     public function store(Request $request)
     {
-        request()->validate([
+
+        $validator = Validator::make($request->all(), [
             'name' => 'required|unique:accounts',
             'prefixe' => 'required',
             'counter' => 'required',
             'statut' => 'required',
             'photo' => 'required',
-            'photo_dir' => 'required',
+            'photo_dir' => 'required'
         ]);
-    
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
         $account = account::create($request->all());
     
         return response()->json([
-            'statut' => 'product created successfuly',
+            'statut' => 1,
             'product' => $account,
         ]);
     }
@@ -62,7 +67,8 @@ class AccountController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'prefixe' => 'required',
             'counter' => 'required',
@@ -70,18 +76,18 @@ class AccountController extends Controller
             'photo' => 'required',
             'photo_dir' => 'required',
         ]);
-        $account = account::find($id);
-        $account->name = $request->input('name');
-        $account->prefixe = $request->input('prefixe');
-        $account->counter = $request->input('counter');
-        $account->statut = $request->input('statut');
-        $account->photo = $request->input('photo');
-        $account->photo_dir = $request->input('photo_dir');
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
 
-        $account->save();
-        return response()->json([
-            'statut' => 'your account is updated successfuly',
-            'account' => $account,
+        $account_only = collect($request->only('name','prefixe','counter','statut','photo','photo_dir'));
+        $account = account::find($id)->update($account_only->all());
+        $account_updated = account::find($id)->get();
+       return response()->json([
+            'statut' => 1,
+            'account' => $account_updated,
         ]);
     }
 
@@ -91,7 +97,7 @@ class AccountController extends Controller
         $account_b =  account::find($id);
         $account = account::find($id)->delete();
         return response()->json([
-            'statut' => 'deleted successfuly',
+            'statut' => 1,
             'account' => $account_b,
         ]);
     }
