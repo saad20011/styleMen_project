@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\adresse;
 use App\Models\city;
-
+use Validator;
 class AdresseController extends Controller
 {
 
@@ -35,8 +35,8 @@ class AdresseController extends Controller
             'adresse' => 'required',
             'city_id' => 'required',
         ]);
-    
-        $adresse = adresse::create($request->all());
+        $adresse_only = collect($request->all())->only('adresse','city_id')->all();
+        $adresse = adresse::create($adresse_only);
     
         return response()->json([
             'statut' => 1,
@@ -63,17 +63,22 @@ class AdresseController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
+
+        $validator = Validator::make($request->all(), [
             'adresse' => 'required',
             'city_id' => 'required',
         ]);
-        $adresse = adresse::find($id);
-        $adresse->adresse = $request->input('adresse');
-        $adresse->city_id = $request->input('city_id');
-        $adresse->save();
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
+        $adresse_col = collect($request->all())->only('adresse','city_id')->all();
+        $adresse = adresse::find($id)->update($adresse_col);
+        $adresse_updated = adresse::find($id);
         return response()->json([
             'statut' => 1,
-            'adresse' => $adresse,
+            'adresse' => $adresse_updated,
         ]);
     }
 

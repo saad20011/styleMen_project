@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('offers', function (Blueprint $table) {
+        Schema::create('products_depots', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->double('price',8,2);
-            $table->double('carrier_price',8,2);
-            $table->integer('statut')->length(11)->default(1);
-            $table->foreignId('account_id')->constrained();
-            $table->foreignId('source_id')->constrained();
+            $table->foreignId('product_size_id')->constrained();
+            $table->foreignId('depot_id')->constrained();
+            $table->integer('quantity')->length(11)->default(0);
+            $table->string('status')->default(1);
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('offers');
+        Schema::dropIfExists('products_depots');
     }
 };

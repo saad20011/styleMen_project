@@ -3,36 +3,60 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\accounts_carrier;
+use App\Models\delivery_men;
+use Validator;
+use DB;
 class DeliveryMenController extends Controller
 {
 
     public function index(Request $request)
     {
-        $phone_types = phone_type::get();
+        $delivery_man = DB::table('delivery_mens')
+            ->join('accounts_carriers', 'accounts_carriers.id', '=', 'delivery_mens.account_carrier_id')
+            ->join('carriers', 'carriers.id', '=', 'accounts_carriers.carrier_id')
+            ->select('delivery_mens.name as delivery_men_name',
+                    'carriers.title as carrier_name',
+            )->get();
 
         return response()->json([
-            'you'=>$phone_types,
+            'delivery_man '=>$delivery_man,
         ]);
     }
 
     public function create(Request $request)
     {
-
+        $carriers = DB::table('accounts_carriers')
+            ->join('carriers', 'carriers.id', '=', 'accounts_carriers.carrier_id')
+            ->select('accounts_carriers.id',
+                    'carriers.title as carrier_name',
+            )->get();
+        return response()->json([
+            'statut' => 1,
+            'cities ' => $carriers,
+        ]);
     }
 
     public function store(Request $request)
     {
-        request()->validate([
-            'title' => 'required',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'account_carrier_id' => 'required',
+            'photo' => 'required',
+            'photo_dir' => 'required',
             'statut' => 'required',
         ]);
-    
-        $phone_type = phone_type::create($request->all());
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
+        $delivery_men_only = collect($request->all())->only('name','account_carrier_id','photo','photo_dir','statut')->all();
+        $delivery_men = delivery_men::create($delivery_men_only);
     
         return response()->json([
-            'statut' => 'product created successfuly',
-            'product' => $phone_type,
+            'statut' => 1,
+            'delivery_men' => $delivery_men,
         ]);
     }
 
@@ -44,33 +68,52 @@ class DeliveryMenController extends Controller
 
     public function edit($id)
     {
-        //
-    }
+        $delivery_men = delivery_men::find($id);
+        $carriers = DB::table('accounts_carriers')
+            ->join('carriers', 'carriers.id', '=', 'accounts_carriers.carrier_id')
+            ->select('accounts_carriers.id',
+                    'carriers.title as carrier_name',
+            )->get();
+        return response()->json([
+            'statut' => 1,
+            'delivery_men ' => $delivery_men,
+            'carriers ' => $carriers
+        ]);
 
+    }
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'statut' => 'required'
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'account_carrier_id' => 'required',
+            'photo' => 'required',
+            'photo_dir' => 'required',
+            'statut' => 'required',
         ]);
-        $phone_type = phone_type::find($id);
-        $phone_type->title = $request->input('title');
-        $phone_type->statut = $request->input('statut');
-        $phone_type->save();
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
+        $delivery_men_col = collect($request->all())->only('name','account_carrier_id','photo','photo_dir','statut')->all();
+        $delivery_men = delivery_men::find($id)->update($delivery_men_col);
+        $delivery_men_updated = delivery_men::find($id);
         return response()->json([
-            'statut' => 'your phone type is updated successfuly',
-            'phone_type' => $phone_type,
+            'statut' => 1,
+            'delivery_men' => $delivery_men_updated,
         ]);
     }
 
 
     public function destroy($id)
     {
-        $phone_type = phone_type::where('id',$id)->delete();
+        $delivery_men_b =  delivery_men::find($id);
+        $delivery_men = delivery_men::find($id)->delete();
         return response()->json([
-            'statut' => 'deleted successfuly',
-            'role' => $phone_type,
+            'statut' => 1,
+            'delivery_men' => $delivery_men_b,
         ]);
     }
 }

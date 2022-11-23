@@ -14,6 +14,7 @@ class size extends Model
         'account_id',
         'user_id' ,
         'photo' ,
-        'photo_dir' 
+        'photo_dir',
+        'type_size_id' 
     ];
 }

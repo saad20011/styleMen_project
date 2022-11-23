@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('website')->nullable();
-            $table->string('mail')->nullable();
+            $table->string('email')->nullable();
             $table->foreignId('account_id')->constrained();
             $table->string('photo')->nullable();
             $table->string('photo_dir')->nullable();

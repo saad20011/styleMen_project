@@ -13,15 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('default_carriers', function (Blueprint $table) {
+        Schema::create('offers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('carrier_id')->constrained();
-            $table->foreignId('city_id')->constrained();
             $table->string('title');
-            $table->integer('price')->length(11)->default(0);
-            $table->integer('return')->length(11)->default(0);
-            $table->integer('delivery_time')->length(11)->default(1);
+            $table->double('price',8,2);
+            $table->double('shipping_price',8,2);
             $table->integer('statut')->length(11)->default(1);
+            $table->foreignId('account_id')->constrained();
+            $table->foreignId('brand_id')->constrained();
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('default_carriers');
+        Schema::dropIfExists('offers');
     }
 };

@@ -13,9 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('accounts_carriers_cities', function (Blueprint $table) {
-            $table->string('name',50);
-
+        Schema::create('products_sizes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained();
+            $table->foreignId('size_id')->constrained();
+            $table->integer('quantity')->default(0);
+            $table->integer('statut')->default(1);
+            $table->timestamps();
         });
     }
 
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('products_sizes');
     }
 };

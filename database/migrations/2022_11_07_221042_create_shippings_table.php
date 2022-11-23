@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('shippings', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('account_carrier_id')->constrained();
             $table->foreignId('delivery_men_id')->constrained();
             $table->integer('statut')->length(11)->nullable();
             $table->string('comment')->nullable();

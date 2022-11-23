@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\size;
 use App\Models\account;
 use App\Models\User;
-
+use App\Models\type_size;
+use Validator;
 class SizeController extends Controller
 {
 
@@ -24,30 +25,33 @@ class SizeController extends Controller
     {
         $accounts = account::get();
         $users = User::get();
+        $type_sizes = type_size::get();
 
         return response()->json([
             'statut ' => 1,
             'accounts ' => $accounts,
-            'users ' => $users
+            'users ' => $users,
+            'type_sizes ' => $type_sizes
         ]);
     }
 
     public function store(Request $request)
     {
-        request()->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required|unique:size',
             'statut' => 'required',
             'account_id' => 'required',
             'user_id' => 'required',
             'photo' => 'required',
             'photo_dir' => 'required',
+            'type_size_id'=>'required'
         ]);
-    
-        $size = size::create($request->all());
+        $size_col = collect($request->all())->only('type_size_id','title','statut','account_id','photo','photo_dir','user_id')->toArray();
+        $size = size::create($size_col);
     
         return response()->json([
             'statut' => 'size created successfuly',
-            'size ' => $size,
+            'size ' => $request->all(),
         ]);
     }
 
@@ -70,26 +74,30 @@ class SizeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'statut' => 'required',
             'account_id' => 'required',
             'user_id' => 'required',
             'photo' => 'required',
             'photo_dir' => 'required',
-        ]);
-        $size = size::find($id);
-        $size->title = $request->input('title');
-        $size->statut = $request->input('statut');
-        $size->account_id = $request->input('account_id');
-        $size->user_id = $request->input('user_id');
-        $size->photo = $request->input('photo');
-        $size->photo_dir = $request->input('photo_dir');
+            'type_size_id'=>'required'
 
-        $size->save();
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'Validation Errors' => $validator->errors()
+            ]);
+        }
+        $size_col = collect($request->all())
+            ->only('type_size_id','title','statut','account_id','user_id','photo','photo_dir')
+            ->toArray();
+        $size = size::find($id)
+            ->update($size_col);
+        $size_updated = size::find($id);
         return response()->json([
-            'statut' => 'your size is updated successfuly',
-            'size' => $size,
+            'statut' => 1,
+            'size' => $size_updated,
         ]);
     }
 

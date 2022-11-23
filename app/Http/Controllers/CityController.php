@@ -98,26 +98,24 @@ class CityController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            '*.title' => 'required',
-            '*.statut' => 'required',
-            '*.region_id' => 'required',
-            '*.preferred' => 'required',
+            'title' => 'required',
+            'statut' => 'required',
+            'region_id' => 'required',
+            'preferred' => 'required',
         ]);
         if($validator->fails()){
             return response()->json([
                 'Validation Error', $validator->errors()
             ]);       
         };
-        $city = city::find($id);
-        $city->title = $request->input('title');
-        $city->statut = $request->input('statut');
-        $city->region_id = $request->input('region_id');
-        $city->preferred = $request->input('preferred');
 
-        $city->save();
+        $city_col = collect($request->all())->only('title','statut','region_id','preferred')->all();
+        $city = city::find($id)->update($city_col);
+        $city_updated = city::find($id);
+
         return response()->json([
             'statut' => 'your city is updated successfuly',
-            'city' => $city,
+            'city' => $city_updated,
         ]);
     }
 

@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('code',100)->nullable();
-            $table->foreignId('customer_id')->constrained();
-            $table->foreignId('account_carrier_id')->constrained();
+            $table->string('code',100)->nullable(); //
+            $table->foreignId('customer_id')->constrained(); // aprés la creation customer
+            $table->foreignId('account_carrier_id')->constrained(); //
             $table->foreignId('account_user_id')->constrained();
             $table->string('adresse')->nullable();
             $table->foreignId('city_account_id')->constrained();

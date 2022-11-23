@@ -15,10 +15,9 @@ return new class extends Migration
     {
         Schema::create('brands_sources', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('brand_id');
-            $table->unsignedBigInteger('source_id');
-            $table->foreign('data_id')->references('id')->on('brands');
-            $table->foreign('source_id')->references('id')->on('sources');
+            $table->foreignId('account_id')->constrained();
+            $table->foreignId('brand_id')->constrained();
+            $table->foreignId('source_id')->constrained();
             $table->string('link')->nullable();
             $table->integer('statut')->length(11)->default(1);
             $table->timestamps();

@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use DB;
-    
+
 class RoleController extends Controller
 {
 

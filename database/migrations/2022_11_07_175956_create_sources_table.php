@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('sources', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_id')->constrained();
             $table->string('title');
             $table->string('photo')->nullable();
             $table->string('photo_dir')->nullable();
