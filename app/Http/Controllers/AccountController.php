@@ -11,7 +11,7 @@ class AccountController extends Controller
     public function index(Request $request)
     {
         $accounts = account::get();
-
+        //test
         return response()->json([
             'statut' => 1,
             'account' => $accounts,
