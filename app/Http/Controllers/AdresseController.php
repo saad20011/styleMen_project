@@ -12,7 +12,7 @@ class AdresseController extends Controller
     public function index(Request $request)
     {
         $adresses = adresse::get();
-
+        //commentaires
         return response()->json([
             'adresses '=>$adresses,
         ]);
