@@ -44,12 +44,12 @@ use App\Http\Controllers\SupplierOrderController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::post('register_new_user', [RegisterController::class, 'register_new_user']);
 Route::post('register_new_account', [RegisterController::class, 'register_new_account']);
 Route::post('login', [RegisterController::class, 'login']);
 // Route::resource('phoneType', PhoneTypeController::class);
 
 Route::middleware('auth:api')->group( function () {
+    Route::post('register_new_user', [RegisterController::class, 'register_new_user']);
     Route::resource('product', ProductController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
