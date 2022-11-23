@@ -9,15 +9,20 @@ use App\Models\account;
 use App\Models\phone_type;
 use App\Models\phone;
 use App\Models\city;
-
+use App\Models\account_user;
+use Auth;
 class SupplierController extends Controller
 {
 
     public function index(Request $request)
     {
-        $suppliers = supplier::get();
+        $account_user = account_user::where('user_id',Auth::user()->id)
+            ->first(['account_id','user_id']);
+        $suppliers = supplier::where('account_id', $account_user->account_id)
+            ->get();
 
         return response()->json([
+            'statut' => 1,
             'suppliers '=>$suppliers,
         ]);
     }
