@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('account_id')->constrained();
             $table->string('reference');
-            $table->string('account_id');
             $table->string('title');
             $table->string('link');
             $table->float('price',11,2);

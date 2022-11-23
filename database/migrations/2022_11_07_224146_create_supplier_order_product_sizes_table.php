@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('supplier_order_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('supplier_order_id')->constrained();
-            $table->foreignId('product_size_id')->constrained();
-            $table->foreignId('receipt_id')->constrained();
+            $table->foreignId('products_size_id')->constrained();
+            $table->foreignId('supplier_receipt_id')->constrained();
             $table->integer('quantity')->length(11)->default(0);
             $table->integer('price')->length(11)->default(0);
             $table->foreignId('user_id')->constrained();

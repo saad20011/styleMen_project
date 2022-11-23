@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('delivery_mens', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('account_carrier_id')->constrained();
+            $table->foreignId('accounts_carrier_id')->constrained();
             $table->string('photo')->nullable();
             $table->string('photo_dir')->nullable();
             $table->integer('statut')->length(11)->default(1);

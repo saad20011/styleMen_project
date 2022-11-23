@@ -12,7 +12,7 @@ return new class extends Migration
         Schema::create('order_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained();
-            $table->foreignId('product_size_id')->constrained();
+            $table->foreignId('products_size_id')->constrained();
             $table->foreignId('offer_id')->constrained();
             $table->float('price',8,2);
             $table->integer('quantity')->length(11)->default(1);

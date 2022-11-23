@@ -13,13 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('supplier_order_product_sizes', function (Blueprint $table) {
+        Schema::create('supplier_billings', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->foreignId('user_id')->constrained();
             $table->foreignId('supplier_id')->constrained();
-            $table->integer('status');
+            $table->foreignId('user_id')->constrained();
             $table->foreignId('account_id')->constrained();
+            $table->string('montant');
+            $table->string('comment');
+            $table->integer('status');
             $table->timestamps();
         });
     }

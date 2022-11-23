@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('code',100)->nullable(); //
             $table->foreignId('customer_id')->constrained(); // aprés la creation customer
-            $table->foreignId('account_carrier_id')->constrained(); //
+            $table->foreignId('accounts_carrier_id')->constrained(); //
             $table->foreignId('account_user_id')->constrained();
             $table->string('adresse')->nullable();
-            $table->foreignId('city_account_id')->constrained();
+            $table->foreignId('accounts_city_id')->constrained();
             $table->string('shipping_code')->nullable();
             $table->double('discount',8,2)->default(0);
             $table->double('carrier_price',8,2)->default(0);
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('comment')->nullable();
             $table->foreignId('status_id')->constrained();
             $table->foreignId('payment_method_id')->constrained();
-            $table->foreignId('data_source_id')->constrained();
+            $table->foreignId('brands_source_id')->constrained();
             $table->integer('sms')->default(0);
             $table->integer('return')->nullable();
             $table->integer('affected')->nullable();
