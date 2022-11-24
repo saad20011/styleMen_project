@@ -33,8 +33,8 @@ class ProductController extends Controller
         ->leftJoin('suppliers', 'suppliers.id', '=', 'products_suppliers.supplier_id')
         // ->where('accounts.id','2')
         ->where('products_sizes.statut','1')
-        ->where('products_offers.statut','1')
-        ->where('products_suppliers.statut','1')
+        ->where('products_offers.status','1')
+        ->where('products_suppliers.status','1')
         ->where('accounts_products.statut','1')
         ->orderBy('products.title')
         ->select('accounts.id as account_id',
@@ -295,7 +295,7 @@ class ProductController extends Controller
             ->select('offers.id as offer_id',
                     'products.id as product_id',
                     'products_offers.id as product_offer_id',
-                    'products_offers.statut as product_offer_statut',
+                    'products_offers.status as product_offer_statut',
             )->get();
         $request_offers = $request->input('offers');
         $reactive_or_add_offer = collect($request_offers)->map(function($request_offer) use($product_offers,$account_user,$product_updated){
@@ -376,7 +376,7 @@ class ProductController extends Controller
             ->select('suppliers.id as supplier_id',
                     'products.id as product_id',
                     'products_suppliers.id as product_supplier_id',
-                    'products_suppliers.statut as product_supplier_statut',
+                    'products_suppliers.status as product_supplier_statut',
             )->get();
         $request_suppliers = $request->input('suppliers');
         $reactive_or_add_supplier = collect($request_suppliers)->map(function($request_supplier) use($product_suppliers,$account_user,$product_updated){

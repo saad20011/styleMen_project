@@ -26,7 +26,7 @@ return new class extends Migration
             $table->double('carrier_price',8,2)->default(0);
             $table->double('total',8,2)->default(0);
             $table->double('real_price',8,2)->nullable();
-            $table->foreignId('delivery_men_id')->constrained();
+            // $table->foreignId('delivery_men_id')->constrained();
             $table->double('real_carrier_price',8,2)->default(0);
             $table->foreignId('shipping_id')->constrained();
             $table->foreignId('invoice_id')->constrained();

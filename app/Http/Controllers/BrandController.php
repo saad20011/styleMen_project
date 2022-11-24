@@ -120,6 +120,7 @@ class BrandController extends Controller
                 'users.id as user_id'
         )->first();
         $sources = source::get(['id', 'title', 'photo', 'photo_dir', 'statut']);
+        
         $brand_sources = DB::table('brands_sources')
             ->join('brands', function ($join) use($account_user, $id){
                 $join->on('brands_sources.brand_id', '=', 'brands.id')
@@ -132,7 +133,6 @@ class BrandController extends Controller
                     'brands.title as brand_name',
                     'brands.id as brand_id',)
             ->orderBy('brands.id')->get()->toArray();
-        // dd($brand_sources);
         $distinc = array();
         foreach($brand_sources as $key=>$value){
             if(array_key_exists($brand_sources[$key]->brand_id, $distinc)==false){

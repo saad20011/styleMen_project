@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('phone');
             $table->foreignId('phone_type_id')->constrained();
+            $table->foreignId('account_id')->constrained();
             $table->timestamps();
         });
     }
