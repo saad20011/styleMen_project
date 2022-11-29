@@ -33,8 +33,13 @@ class brand extends Model
         return $this->hasMany(offer::class);
     }
 
-    public function account_offers()
+    public function images()
     {
-        return $this->belongsToMany(account::class, 'offers');
+        return $this->morphToMany(image::class, 'imageable');
     }
+
+    // public function account_offers()
+    // {
+    //     return $this->belongsToMany(account::class, 'offers');
+    // }
 }

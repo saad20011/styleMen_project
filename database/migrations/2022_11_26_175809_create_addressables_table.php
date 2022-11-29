@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('imageables', function (Blueprint $table) {
+        Schema::create('addressables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('image_id')->constrained();
-            $table->morphs('imageable'); 
+            $table->morphs('addressable'); 
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('imageables');
+        Schema::dropIfExists('addressables');
     }
 };
