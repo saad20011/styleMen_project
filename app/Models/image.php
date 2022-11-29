@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class image extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'title',
+        'photo',
+        'photo_dir',
+        'statut'
+    ];
+    
     public function accounts()
     {
         return $this->morphedByMany(account::class, 'imageable');
@@ -32,5 +38,10 @@ class image extends Model
     public function collectors()
     {
         return $this->morphedByMany(collector::class, 'imageable');
+    }
+    
+    public function brands()
+    {
+        return $this->morphedByMany(brand::class, 'imageable');
     }
 }

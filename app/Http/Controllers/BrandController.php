@@ -3,57 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\brand;
+use App\Models\User;
 use App\Models\source;
+use App\Models\account;
 use App\Models\brands_sources;
-use Auth;
-use Validator;
-use DB;
+use App\Models\brand;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+
 
 class BrandController extends Controller
 {
     public function index(Request $request)
     {
-        $brands = brand::get();
-        $account_user = DB::table('account_users')
-        ->join('users','users.id', '=', 'account_users.user_id')
-        ->join('accounts','accounts.id', '=', 'account_users.account_id')
-        ->where('users.id',Auth::user()->id)
-        ->select('accounts.name as account_name',
-                'accounts.id as account_id',
-                'users.id as user_id'
-        )->first();
-        $brand_sources = DB::table('brands_sources')
-            ->rightJoin('brands', function ($join) use($account_user){
-                $join->on('brands_sources.brand_id', '=', 'brands.id')
-                    ->where('brands_sources.account_id', '=', $account_user->account_id)
-                    ->where('brands_sources.statut', '=', '1');
-            })
-            ->leftjoin('sources', 'sources.id', '=', 'brands_sources.source_id')
-            ->select('sources.title as sources',
-                    'brands_sources.statut as brand_source_statut',
-                    'brands.title as brand_name',
-                    'brands.id as brand_id',)
-            ->orderBy('brands.id')->get()->toArray();
-        // dd($brand_sources);
-        $distinc = array();
-        foreach($brand_sources as $key=>$value){
-            if(array_key_exists($brand_sources[$key]->brand_id, $distinc)==false){
-              $element = array(
-                "brand_id"=>$brand_sources[$key]->brand_id,
-                "brand_name"=>$brand_sources[$key]->brand_name,
-                "sources"=>array($brand_sources[$key]->sources),
-                );
-              $distinc[$brand_sources[$key]->brand_id]= $element;
-            }else{
-                if(in_array($brand_sources[$key]->sources, $distinc[$brand_sources[$key]->brand_id]["sources"])==false ){
-                    array_push($distinc[$brand_sources[$key]->brand_id]["sources"],$brand_sources[$key]->sources);
-                }
-            }
-          }
+        $account = User::find(Auth::user()->id);
+        $brands = account::find($account->id)->brands;
+        foreach($brands as $brand){
+            $brand->sources = brand::find($brand->id)->sources;
+        }
         return response()->json([
-            'statut' => 1,
-            'brands ' => array_values($distinc),
+            'statut' =>$account->id,
+            'brands ' =>$brands,
         ]);
     }
 
@@ -68,8 +39,6 @@ class BrandController extends Controller
             'title' => 'required',
             'website' => 'required',
             'email' => 'required',
-            'photo' => 'required',
-            'photo_dir' => 'required',
             'statut' => 'required',
             'sources' => ''
         ]);
@@ -78,26 +47,15 @@ class BrandController extends Controller
                 'Validation Error', $validator->errors()
             ]);       
         };
-        $account_user = DB::table('account_users')
-            ->join('users','users.id', '=', 'account_users.user_id')
-            ->join('accounts','accounts.id', '=', 'account_users.account_id')
-            ->where('users.id',Auth::user()->id)
-            ->select('accounts.name as account_name',
-                    'accounts.id as account_id',
-                    'users.id as user_id'
-            )->first();
+        $account = User::find(Auth::user()->id);
+        $brand = account::find($account->id)->brands()->create($request->only('title','website','email','statut'));
+        $brand->images()->create([
+            'title'=> 'ads',
+            'photo'=>'picture.',
+            'photo_dir'=>'/ads',
+        ]);
 
-        $brand_only = collect($request->only('title','website','email','photo','photo_dir','statut'))
-            ->put('account_id',$account_user->account_id)->all();
-        $brand = brand::create($brand_only);
-        $brand_sources = collect($request->input('sources'))->map(function($source) use($account_user, $brand){
-            $brand_source = brands_sources::create([
-                'source_id'=> $source,
-                'account_id' => $account_user->account_id,
-                'brand_id' => $brand['id'],
-            ]);
-            return $brand_source;
-        });
+
         return response()->json([
             'statut' => 'brand created successfuly',
             'brand' => $brand,

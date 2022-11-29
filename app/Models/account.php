@@ -119,4 +119,8 @@ class account extends Model
     {
         return $this->hasMany(collector::class);
     }
+    public function brands()
+    {
+        return $this->hasMany(brand::class);
+    }
 }
