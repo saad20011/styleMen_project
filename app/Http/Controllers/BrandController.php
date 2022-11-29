@@ -9,6 +9,7 @@ use App\Models\brands_sources;
 use Auth;
 use Validator;
 use DB;
+
 class BrandController extends Controller
 {
     public function index(Request $request)

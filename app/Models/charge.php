@@ -17,4 +17,8 @@ class charge extends Model
         'date',
         'statut',
     ];
+    public function charge_types()
+    {
+        return $this->hasMany(charge_type::class);
+    }
 }

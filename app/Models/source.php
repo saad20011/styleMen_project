@@ -15,4 +15,13 @@ class source extends Model
         'statut',
         'account_id'
     ];
+    public function brand_source()
+    {
+        return $this->hasMany(brand_source::class);
+        
+    }
+    public function brands()
+    {
+        return $this->belongsToMany(brand::class, 'brand_source');
+    }
 }

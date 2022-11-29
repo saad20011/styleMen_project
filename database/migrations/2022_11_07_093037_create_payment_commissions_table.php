@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('payment_commissions', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('account_user_id')->constrained('account_user'); //new 
             $table->foreignId('payment_method_id')->constrained();
             $table->foreignId('payment_type_id')->constrained();
             $table->double('montant',11,2)->default(0);

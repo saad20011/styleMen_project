@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('supplier_billings', function (Blueprint $table) {
             $table->id();
+            $table->string('code');
             $table->foreignId('supplier_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('account_id')->constrained();
+            $table->foreignId('account_user_id')->constrained('account_user');
+            // $table->foreignId('account_id')->constrained();
             $table->string('montant');
             $table->string('comment');
             $table->integer('status');

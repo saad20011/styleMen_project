@@ -15,11 +15,9 @@ return new class extends Migration
     {
         Schema::create('supplier_receipts', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 10);
+            $table->string('code', 10);
             $table->foreignId('supplier_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('supplier_billing_id')->constrained();
-            $table->foreignId('account_id')->constrained();
+            $table->foreignId('account_user_id')->constrained('account_user');
             $table->integer('status')->length(11)->default(1);
             $table->timestamps();
         });

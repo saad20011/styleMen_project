@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
-            $table->foreignId('accounts_carrier_id')->constrained();
+            $table->foreignId('account_carrier_id')->constrained('account_carrier');
             $table->string('type');
             $table->foreignId('user_id')->constrained();
             $table->integer('statut')->length(11)->nullable();

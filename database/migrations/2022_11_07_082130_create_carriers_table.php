@@ -15,17 +15,13 @@ return new class extends Migration
     {
         Schema::create('carriers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_id')->constrained(); // new
             $table->string('title');
-            $table->foreignId('phone_id')->constrained();
-            $table->foreignId('adresse_id')->constrained();
             $table->string('email')->nullable();
             $table->string('trackinglink')->nullable();
             $table->integer('autocode')->length(11)->default(1);
-            $table->string('photo')->nullable();
-            $table->string('photo_dir')->nullable();
             $table->string('comment')->nullable();
             $table->integer('statut')->length(11)->nullable();
-            $table->foreignId('user_id')->constrained();
 
             $table->timestamps();
         });

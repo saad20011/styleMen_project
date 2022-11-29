@@ -3,18 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\account;
+use App\Models\User;
+use App\Models\account_user;
 use Illuminate\Http\Request;
 use Validator;
+use Auth;
 class AccountController extends Controller
 {
 
     public function index(Request $request)
     {
+<<<<<<< HEAD
         $accounts = account::get();
         //test
+=======
+
+        $account = account::find(4);
+        $account->phones()->create([
+            'phone_type_id'=> 1,
+            'account_id'=>4,
+            'title'=>'0612121212',
+            ''
+        ]);
+        $account_user = account_user::find(1)->user;
+        $user = User::find(Auth::user()->id);
+>>>>>>> 5e860d53fec05cdd494fb3616056fbbf8dd2c334
         return response()->json([
-            'statut' => 1,
-            'account' => $accounts,
+            // 'statut' => 1,
+            // 'account_user' => $account_user,
+            // 'user' => $user->accounts,
+            'phone' => $account->phones,
 
         ]);
     }

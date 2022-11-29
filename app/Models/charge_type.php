@@ -12,4 +12,9 @@ class charge_type extends Model
         'title',
         'statut'
     ];
+
+    public function charges()
+    {
+        return $this->belongsTo(charge::class);
+    }
 }

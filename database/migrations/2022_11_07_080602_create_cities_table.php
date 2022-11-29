@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->foreignId('region_id')->constrained();
-            $table->integer('preferred')->length(11);
             $table->integer('statut')->length(11)->default(1);
             $table->timestamps();
         });

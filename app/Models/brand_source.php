@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class brands_sources extends Model
+class brand_source extends Model
 {
     use HasFactory;
+    protected $table = 'brand_source';
     protected $fillable = [
         
         'account_id',
@@ -16,4 +17,11 @@ class brands_sources extends Model
         'link',
         'statut'
     ];
+    public function brands(){
+        return $this->belongsTo(brand::class);
+    }
+
+    public function accounts(){
+        return $this->belongsTo(account::class);
+    }
 }

@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('accounts_cities', function (Blueprint $table) {
+        Schema::create('account_city', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('city_id')->constrained();
             $table->foreignId('account_id')->constrained();
+            $table->foreignId('city_id')->constrained();
             $table->integer('prefered')->length(11)->nullable();
             $table->integer('statut')->length(11)->default(1);
             $table->timestamps();

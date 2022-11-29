@@ -17,4 +17,24 @@ class brand extends Model
         'statut',
         'account_id'
     ];
+
+    public function brand_source()
+    {
+        return $this->hasMany(brand_source::class);
+        
+    }
+    public function sources()
+    {
+        return $this->belongsToMany(source::class);
+    }
+
+    public function offers()
+    {
+        return $this->hasMany(offer::class);
+    }
+
+    public function account_offers()
+    {
+        return $this->belongsToMany(account::class, 'offers');
+    }
 }

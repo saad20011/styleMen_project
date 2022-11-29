@@ -13,11 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('adresses', function (Blueprint $table) {
+        //change name account_code
+        Schema::create('account_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('adresse');
-            $table->foreignId('city_id')->constrained();
-            $table->integer('statut')->length(11)->default(1);  
+            $table->string('title');
+            $table->foreignId('account_id')->constrained();
+            $table->integer('statut')->length(11)->default(1);
+            $table->integer('current_statut')->length(11);
+            $table->integer('postponed')->length(11);
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('adresses');
+        Schema::dropIfExists('company_codes');
     }
 };

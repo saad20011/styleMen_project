@@ -16,10 +16,9 @@ return new class extends Migration
         Schema::create('subcomments', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('account_id')->constrained();
+            $table->foreignId('account_user_id')->constrained('account_user');
             $table->foreignId('comment_id')->constrained();
             $table->string('order_change');
-            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

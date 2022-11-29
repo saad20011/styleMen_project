@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('account_users', function (Blueprint $table) {
+        Schema::create('imageables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->integer('statut')->length(11)->default(1);
+            $table->foreignId('image_id')->constrained();
+            $table->morphs('imageable'); 
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('account_users');
+        Schema::dropIfExists('imageables');
     }
 };

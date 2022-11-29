@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('charges', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->constrained();
+            $table->foreignId('payment_commission_id')->constrained()->nullable();
+            $table->foreignId('account_user_id')->constrained('account_user')->nullable();
             $table->foreignId('charge_type_id')->constrained();
             $table->double('montant',11,2)->default(0);
-            $table->foreignId('payment_commission_id')->constrained()->nullable();
             $table->string('comment')->nullable();
             $table->date('date');
             $table->integer('statut')->length(11)->default(1);

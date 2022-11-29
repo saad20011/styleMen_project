@@ -13,15 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('accounts_carriers', function (Blueprint $table) {
+        Schema::create('pickups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('carrier_id')->constrained();
-            $table->foreignId('account_id')->constrained();
-            $table->integer('autocode')->length(11);
+            $table->string('code');
+            $table->foreignId('account_user_id')->constrained('account_user');
+            $table->foreignId('account_carrier_id')->constrained('account_carrier');
+            $table->foreignId('collector_id')->constrained();
             $table->integer('statut')->length(11)->nullable();
+            $table->string('comment')->nullable();
             $table->timestamps();
         });
     }
+
     /**
      * Reverse the migrations.
      *
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accounts_carriers');
+        Schema::dropIfExists('pickups');
     }
 };

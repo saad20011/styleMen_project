@@ -11,14 +11,14 @@ return new class extends Migration
     {
         Schema::create('order_products', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_user_id')->constrained('account_user');
             $table->foreignId('order_id')->constrained();
-            $table->foreignId('products_size_id')->constrained();
+            $table->foreignId('product_size_id')->constrained('product_size');
             $table->foreignId('offer_id')->constrained();
             $table->float('price',8,2);
             $table->integer('quantity')->length(11)->default(1);
-            $table->foreignId('user_id')->constrained();
+            // $table->foreignId('user_id')->constrained();
             $table->string('status')->default(1);
-            $table->foreignId('account_user_id')->constrained();
             $table->timestamps();
         });
     }

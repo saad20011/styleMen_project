@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Region;
+use App\Models\region;
+use App\Models\account;
 
 class RegionController extends Controller
 {
     public function index(Request $request)
     {
         $regions = region::get();
+        $region = account::find(1)->regions;
+        $account = region::find(2)->account;
+
 
         return response()->json([
-            'you'=>$regions,
+            'you'=>$region,
+            'yes'=>$account,
         ]);
     }
 

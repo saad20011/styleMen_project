@@ -12,4 +12,43 @@ class payment_type extends Model
         'code',
         'name'
     ];
+
+    public function payment_commissions()
+    {
+        return $this->hasMany(payment_commission::class);
+    }
+
+    public function orders(){
+        return $this->hasMany(order::class);
+    }
+
+    public function account_user_order(){
+        return $this->belongsToMany(account_user::class, 'orders');
+    }
+    public function account_city_order(){
+        return $this->belongsToMany(account_city::class, 'orders');
+    }
+    public function customer_order(){
+        return $this->belongsToMany(customer::class, 'orders');
+    }
+    public function payment_method_order(){
+        return $this->belongsToMany(payment_method::class, 'orders');
+    }
+    public function brand_source_order(){
+        return $this->belongsToMany(brand_source::class, 'orders');
+    }
+    public function pickup_order(){
+        return $this->belongsToMany(pickup::class, 'orders');
+    }
+    public function statuses_order(){
+        return $this->belongsToMany(status::class, 'orders');
+    }
+
+    public function payment_commision_order(){
+        return $this->belongsToMany(payment_commission::class, 'orders');
+    }
+
+    public function invoice_order(){
+        return $this->belongsToMany(invoice::class, 'orders');
+    }
 }
