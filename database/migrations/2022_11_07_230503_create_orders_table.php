@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('brand_source_id')->constrained('brand_source');
             $table->foreignId('pickup_id')->constrained();
             $table->foreignId('status_id')->constrained();
-            $table->foreignId('payment_commission_id')->constrained();
+            $table->foreigneId('payment_commission_id')->constrained();
             $table->foreignId('invoice_id')->constrained();
             $table->string('adresse')->nullable();
             $table->double('discount',8,2)->default(0);

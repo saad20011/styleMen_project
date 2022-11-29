@@ -49,4 +49,18 @@ class product_size extends Model
         return $this->belongsToMany(supplier_receipt::class, 'supplier_order_product_size');
         
     }
+
+    public function order_products(){
+        return $this->hasMany(order_product::class);
+    }
+
+    public function order_order_product(){
+        return $this->belongsToMany(order::class, 'order_products');
+    }
+    public function account_user_order_product(){
+        return $this->belongsToMany(account_user::class, 'order_products');
+    }
+    public function offer_order_product(){
+        return $this->belongsToMany(offer::class, 'order_products');
+    }
 }

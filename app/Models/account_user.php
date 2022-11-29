@@ -106,4 +106,67 @@ class account_user extends Model
         ->withPivot('code', 'statut');
         
     }
+
+    public function orders(){
+        return $this->hasMany(order::class);
+    }
+
+    public function customer_order(){
+        return $this->belongsToMany(customer::class, 'orders');
+    }
+    public function account_city_order(){
+        return $this->belongsToMany(account_city::class, 'orders');
+    }
+    public function payment_type_order(){
+        return $this->belongsToMany(payment_type::class, 'orders');
+    }
+    public function payment_method_order(){
+        return $this->belongsToMany(payment_method::class, 'orders');
+    }
+    public function brand_source_order(){
+        return $this->belongsToMany(brand_source::class, 'orders');
+    }
+    public function pickup_order(){
+        return $this->belongsToMany(pickup::class, 'orders');
+    }
+    public function statuses_order(){
+        return $this->belongsToMany(status::class, 'orders');
+    }
+
+    public function payment_commision_order(){
+        return $this->belongsToMany(payment_commission::class, 'orders');
+    }
+
+    public function invoice_order(){
+        return $this->belongsToMany(invoice::class, 'orders');
+    }
+
+    public function order_products(){
+        return $this->hasMany(order_product::class);
+    }
+
+    public function order_order_product(){
+        return $this->belongsToMany(order::class, 'order_products');
+    }
+    public function product_size_order_product(){
+        return $this->belongsToMany(product_size::class, 'order_products');
+    }
+    public function offer_order_product(){
+        return $this->belongsToMany(offer::class, 'order_products');
+    }
+
+    public function order_comments(){
+        return $this->hasMany(order_comment::class);
+    }
+
+    public function order_order_comment(){
+        return $this->belongsToMany(order::class, 'order_comments');
+    }
+    public function subcomment_order_comment(){
+        return $this->belongsToMany(subcomment::class, 'order_comments');
+    }
+    public function status_order_comment(){
+        return $this->belongsToMany(status::class, 'order_comments');
+    }
+
 }

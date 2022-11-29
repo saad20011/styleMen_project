@@ -18,4 +18,18 @@ class subcomment extends Model
     {
         return $this->belongsTo(account_user::class);
     }
+
+    public function order_comments(){
+        return $this->hasMany(order_comment::class);
+    }
+
+    public function account_user_order_comment(){
+        return $this->belongsToMany(account_user::class, 'order_comments');
+    }
+    public function order_order_comment(){
+        return $this->belongsToMany(order::class, 'order_comments');
+    }
+    public function status_order_comment(){
+        return $this->belongsToMany(status::class, 'order_comments');
+    }
 }
