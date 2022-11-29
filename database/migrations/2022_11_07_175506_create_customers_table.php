@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('whatsapphone')->nullable();
             $table->string('facebook')->nullable();
             $table->string('comment')->nullable();
-            $table->foreignId('city_id')->constrained();
+            $table->foreignId('accounts_city_id')->constrained();
             $table->timestamps();
         });
     }

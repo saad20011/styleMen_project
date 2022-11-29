@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\source;
+use App\Models\account_user;
 use Auth;
 use Validator;
 use DB;
@@ -13,7 +14,7 @@ class sourceController extends Controller
     {
         $account_user = account_user::where('user_id',Auth::user()->id)
             ->first(['account_id','user_id']);
-        $supplier_billings = source::where('account_id', $account_user->account_id)
+        $sources = source::where('account_id', $account_user->account_id)
             ->get();
 
         return response()->json([

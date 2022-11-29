@@ -22,7 +22,11 @@ class ChargeController extends Controller
 
     public function create(Request $request)
     {
-        $charge_types = charge_type::get();
+        $account_user = account_user::where('user_id',Auth::user()->id)
+            ->first(['account_id','user_id']);
+            
+        $charge_types = charge_type::where('account_id',$account_user->account_id)
+            ->get();
         $payment_commission = payment_commission::get();
         return response()->json([
             'statut' => 1,

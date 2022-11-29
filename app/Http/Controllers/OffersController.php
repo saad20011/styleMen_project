@@ -3,33 +3,32 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\categorie;
+use App\Models\offer;
 use App\Models\User;
 use App\Models\account_user;
-use App\Models\account;
-use Auth;
 use Validator;
-class CategorieController extends Controller
+use Auth;
+
+class OffersController extends Controller
 {
-    public $account_user ;
-
-
 
     public function index(Request $request)
     {
+        
         $account_user = account_user::where('user_id',Auth::user()->id)
             ->first(['account_id','user_id']);
-        $categories = categorie::where('account_id',$account_user->account_id)
+        $offers = offer::where('account_id',$account_user->account_id)
             ->get();
 
         return response()->json([
-            'categories '=>$categories,
+            'statut' => 1,
+            'offer' => $offers,
         ]);
     }
 
     public function create(Request $request)
     {
-        //
+
     }
 
     public function store(Request $request)
@@ -37,9 +36,10 @@ class CategorieController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required',
+            'price' => 'required',
+            'shipping_price' => 'required',
             'statut' => 'required',
-            'photo' => '',
-            'photo_dir' => '',
+            'brand_id' => 'required',
         ]);
 
         if($validator->fails()){
@@ -47,19 +47,19 @@ class CategorieController extends Controller
                 'Validation Error', $validator->errors()
             ]);       
         };
-        
+
         $account_user = account_user::where('user_id',Auth::user()->id)
             ->first(['account_id','user_id']);
-        
-        $categorie_only = collect($request->only('title','statut', 'photo', 'photo_dir'))
+
+        $offer_only = collect($request->only('title', 'price', 'shipping_price', 'statut', 'brand_id', 'description'))
             ->put('account_id',$account_user->account_id)
-            ->put('user_id',$account_user->user_id)
             ->all();
-        $categorie = categorie::create($categorie_only);
+
+        $offer = offer::create($offer_only);
     
         return response()->json([
-            'statut' => 'categorie created successfuly',
-            'categorie' => $categorie,
+            'statut' => 1,
+            'offer' => $offer,
         ]);
     }
 
@@ -71,22 +71,19 @@ class CategorieController extends Controller
 
     public function edit($id)
     {
-        $categorie = categorie::find($id);
-
-        return response()->json([
-            'statut' => 0,
-            'categorie ' => $categorie
-        ]);
-
+        //
     }
+
 
     public function update(Request $request, $id)
     {
+
         $validator = Validator::make($request->all(), [
             'title' => 'required',
+            'price' => 'required',
+            'shipping_price' => 'required',
             'statut' => 'required',
-            'photo' => '',
-            'photo_dir' => '',
+            'brand_id' => 'required',
         ]);
 
         if($validator->fails()){
@@ -94,33 +91,32 @@ class CategorieController extends Controller
                 'Validation Error', $validator->errors()
             ]);       
         };
-
         $account_user = account_user::where('user_id',Auth::user()->id)
         ->first(['account_id','user_id']);
     
-        $categorie_only = collect($request->all())
-            ->only('title','statut','photo','photo_dir')
+        $offer_only = collect($request->all())
+            ->only('title', 'price', 'shipping_price', 'statut', 'brand_id')
             ->put('account_id', $account_user->account_id)
-            ->put('user_id', $account_user->user_id)
             ->all();
-        $categorie = categorie::find($id)
-            ->update($categorie_only);
-        $categorie_updated = categorie::find($id);
+            
+        $offer = offer::find($id)
+            ->update($offer_only);
+        $offer_updated = offer::find($id);
 
         return response()->json([
             'statut' => 1,
-            'categorie' => $categorie_updated,
+            'offer' => $offer_updated,
         ]);
     }
 
 
     public function destroy($id)
     {
-        $categorie_b =  categorie::find($id);
-        $categorie = categorie::find($id)->delete();
+        $offer_b =  offer::find($id);
+        $offer = offer::find($id)->delete();
         return response()->json([
             'statut' => 'deleted successfuly',
-            'categorie' => $categorie_b,
+            'offer' => $offer_b,
         ]);
     }
 }

@@ -11,5 +11,6 @@ class phone_type extends Model
     protected $fillable = [
         'title',
         'status',
+        'account_id'
     ];
 }

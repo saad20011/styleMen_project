@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\type_size;
 use App\Models\User;
+use App\Models\account_user;
+use Validator;
+use Auth;
 
 class SizeTypeController extends Controller
 {
@@ -12,7 +15,11 @@ class SizeTypeController extends Controller
     
     public function index(Request $request)
     {
-        $type_sizes = type_size::get();
+        
+        $account_user = account_user::where('user_id',Auth::user()->id)
+            ->first(['account_id','user_id']);
+        $type_sizes = type_size::where('account_id',$account_user->account_id)
+            ->get();
 
         return response()->json([
             'statut' => 1,
@@ -27,17 +34,30 @@ class SizeTypeController extends Controller
 
     public function store(Request $request)
     {
-        request()->validate([
+
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
-            'account_id' => 'required',
-            'user_id' => 'required',
         ]);
-    
-        $type_size = type_size::create($request->all());
+
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
+
+        $account_user = account_user::where('user_id',Auth::user()->id)
+            ->first(['account_id','user_id']);
+
+        $type_size_only = collect($request->only('name','description'))
+            ->put('account_id',$account_user->account_id)
+            ->put('user_id',$account_user->user_id)
+            ->all();
+
+        $type_size = type_size::create($type_size_only);
     
         return response()->json([
-            'statut' => 'type_size created successfuly',
+            'statut' => 1,
             'type_size' => $type_size,
         ]);
     }
@@ -59,18 +79,25 @@ class SizeTypeController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'description' => 'required',
-            'account_id' => 'required',
-            'user_id' => 'required',
+
         ]);
-        $type_size = type_size::find($id);
-        $type_size->name = $request->input('name');
-        $type_size->description = $request->input('description');
-        $type_size->account_id = $request->input('account_id');
-        $type_size->user_id = $request->input('user_id');
-        $type_size->save();
+
+        $account_user = account_user::where('user_id',Auth::user()->id)
+        ->first(['account_id','user_id']);
+    
+        $type_size_only = collect($request->all())
+            ->only('name','description')
+            ->put('account_id', $account_user->account_id)
+            ->put('user_id', $account_user->user_id)
+            ->all();
+            
+        $type_size = type_size::find($id)
+            ->update($type_size_only);
+        $type_size_updated = type_size::find($id);
+
         return response()->json([
             'statut' => 1,
-            'type_size' => $type_size,
+            'type_size' => $type_size_updated,
         ]);
     }
 

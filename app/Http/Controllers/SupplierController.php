@@ -41,11 +41,13 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
+        $account_user = account_user::where('user_id',Auth::user()->id)
+            ->first(['account_id','user_id']);
         request()->validate([
             'title' => 'required',
             'adresse' => 'required',
             'phone' => 'required',
-            'account_id' => 'required',
+            // 'account_id' => 'required',
             'photo' => '',
             'photo_dir' => '',
             'statut' => '',
@@ -66,7 +68,7 @@ class SupplierController extends Controller
             'title' => $request['title'],
             'phone_id' => $phone['id'],
             'adresse_id' => $adresse['id'],
-            'account_id' => intval($request['account_id']),
+            'account_id' => $account_user->account_id,
             'photo' => $request['photo'],
             'photo_dir' => $request['photo_dir'],
             'statut' => intval($request['statut']),

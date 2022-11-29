@@ -16,6 +16,7 @@ class RegisterController extends BaseController
     // they register an new user that have already an account id
     public function register_new_user(Request $request)
     {
+        // dd(Auth::user());
         $account_user = account_user::where('user_id',Auth::user()->id)
             ->first(['account_id','user_id']);
 
@@ -25,7 +26,6 @@ class RegisterController extends BaseController
             'password' => 'required',
             'c_password' => 'required|same:password',
         ]);
-   
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
@@ -78,9 +78,8 @@ class RegisterController extends BaseController
             ->all();
 
         $account = account::create($account_only);
-        // dd($account->account_id);
+        $request['password'] = bcrypt($request['password']);
         $user = User::create($request->only('name', 'email', 'password', 'c_password', 'firstname', 'lastname', 'cin', 'birthday', 'status'));
-        // dd($user);
         $account_user = account_user::create([
             'account_id' => $account->id,
             'user_id' => $user->id,

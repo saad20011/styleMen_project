@@ -28,6 +28,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\DeliveryMenController;
 use App\Http\Controllers\SupplierOrderController;
+use App\Http\Controllers\OffersController;
 
 
 /*
@@ -44,12 +45,12 @@ use App\Http\Controllers\SupplierOrderController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::post('register_new_user', [RegisterController::class, 'register_new_user']);
 Route::post('register_new_account', [RegisterController::class, 'register_new_account']);
 Route::post('login', [RegisterController::class, 'login']);
 // Route::resource('phoneType', PhoneTypeController::class);
 
 Route::middleware('auth:api')->group( function () {
+    Route::post('register_new_user', [RegisterController::class, 'register_new_user']);
     Route::resource('product', ProductController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
@@ -77,6 +78,7 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('brand_source', SourceController::class);
     Route::resource('delivery_men', DeliveryMenController::class);
     Route::resource('supplier_order', SupplierOrderController::class);
+    Route::resource('offer', OffersController::class);
 
 
     // Route::resource('products', ProductController::class);
