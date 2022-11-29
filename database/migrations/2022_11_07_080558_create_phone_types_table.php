@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->integer('statut')->length(11)->default(1);
             $table->foreignId('account_id')->constrained();
-            $table->string('photo')->nullable();
-            $table->string('photo_dir')->nullable();
+            // $table->string('photo')->nullable();
+            // $table->string('photo_dir')->nullable();
             $table->timestamps();
         });
     }

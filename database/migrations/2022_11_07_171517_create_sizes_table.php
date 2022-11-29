@@ -19,10 +19,10 @@ return new class extends Migration
             $table->integer('statut')->default(1);
             $table->foreignId('account_id')->constrained();
             $table->foreignId('type_size_id')->constrained();
-            $table->string('photo')->nullable();
-            $table->string('photo_dir')->nullable();
+            // $table->string('photo')->nullable();
+            // $table->string('photo_dir')->nullable();
             $table->timestamps();
-            $table->foreignId('user_id')->constrained();
+            // $table->foreignId('user_id')->constrained();
         });
     }
 

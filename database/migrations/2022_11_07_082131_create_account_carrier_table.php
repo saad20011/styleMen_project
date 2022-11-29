@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cities', function (Blueprint $table) {
+        Schema::create('account_carrier', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->foreignId('region_id')->constrained();
-            $table->integer('statut')->length(11)->default(1);
+            $table->foreignId('carrier_id')->constrained();
+            $table->foreignId('account_id')->constrained();
+            $table->integer('autocode')->length(11); 
+            $table->integer('statut')->length(11)->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cities');
+        Schema::dropIfExists('account_carrier');
     }
 };

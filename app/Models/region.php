@@ -13,4 +13,15 @@ class region extends Model
         'title',
         'statut'
     ];
+    
+/**
+ * Get the user that owns the region
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+ */
+    public function cities()
+    {
+        return $this->hasMany(city::class);
+    }
 }
+

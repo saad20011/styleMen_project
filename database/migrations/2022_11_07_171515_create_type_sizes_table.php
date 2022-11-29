@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('type_sizes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_id')->constrained()->nullable();
             $table->string('name');
             $table->string('description');
-            $table->foreignId('account_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            // $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

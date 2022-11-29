@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('brands_sources', function (Blueprint $table) {
+        Schema::create('brand_source', function (Blueprint $table) {
             $table->id();
             $table->foreignId('account_id')->constrained();
             $table->foreignId('brand_id')->constrained();
             $table->foreignId('source_id')->constrained();
-            $table->string('link')->nullable();
+            // $table->string('link')->nullable();
             $table->integer('statut')->length(11)->default(1);
             $table->timestamps();
         });

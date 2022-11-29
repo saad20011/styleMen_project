@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->string('email')->nullable();
             $table->foreignId('account_id')->constrained();
-            $table->string('photo')->nullable();
-            $table->string('photo_dir')->nullable();
             $table->string('statut')->length(11)->default(1);
             $table->timestamps();
         });

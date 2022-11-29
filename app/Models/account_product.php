@@ -5,25 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class offer extends Model
+class account_product extends Model
 {
     use HasFactory;
+
+    protected $table = 'account_product' ;
     protected $fillable = [
-        'title', 'price', 'shipping_price', 'statut', 'brand_id','account_id'
+        'product_id',
+        'category_id',
+        'account_id'
     ];
 
-    public function brands()
-    {
-        return $this->belongsTo(brand::class);
+    public function users(){
+        return $this->belongsTo(User::class);
     }
-    public function accounts()
-    {
+
+    public function accounts(){
         return $this->belongsTo(account::class);
     }
 
-    public function account_products()
+    public function offers()
     {
-        return $this->belongsToMany(account_product::class, 'product_offer');
+        return $this->belongsToMany(offer::class, 'product_offer');
     }
 
     public function product_offer()

@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('supplier_order_products', function (Blueprint $table) {
+        Schema::create('supplier_order_product_size', function (Blueprint $table) {
             $table->id();
             $table->foreignId('supplier_order_id')->constrained();
-            $table->foreignId('products_size_id')->constrained();
-            $table->foreignId('supplier_receipt_id')->constrained();
+            $table->foreignId('product_size_id')->constrained('product_size');
+            $table->foreignId('supplier_receipt_id')->constrained()->nullable();
             $table->integer('quantity')->length(11)->default(0);
             $table->integer('price')->length(11)->default(0);
             $table->foreignId('user_id')->constrained();

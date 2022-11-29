@@ -12,4 +12,9 @@ class payment_type extends Model
         'code',
         'name'
     ];
+
+    public function payment_commissions()
+    {
+        return $this->hasMany(payment_commission::class);
+    }
 }

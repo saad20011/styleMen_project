@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use App\Models\city;
+use App\Models\User;
+use App\Models\account;
 use App\Models\region;
-use App\Models\accounts_city;
 use Validator;
 
 class CityController extends Controller
@@ -14,11 +15,13 @@ class CityController extends Controller
 
     public function index(Request $request)
     {
-        $cities = city::get();
+        $account = User::find(24);
+        $cities = account::with('sources', 'carriers', 'products', 'cities')->find($account->id);
 
         return response()->json([
             'statut ' => 1,
             'cities ' => $cities,
+            'account ' => $account,
         ]);
     }
 

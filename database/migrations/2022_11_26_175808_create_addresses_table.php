@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('company_codes', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->foreignId('account_id')->constrained();
-            $table->integer('statut')->length(11)->default(1);
-            $table->integer('current_statut')->length(11);
-            $table->integer('postponed')->length(11);
+            $table->foreignId('account_city_id')->constrained('account_city'); //new
+            $table->string('address');
+            $table->integer('statut')->length(11)->default(1);  
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company_codes');
+        Schema::dropIfExists('addresses');
     }
 };

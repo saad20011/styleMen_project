@@ -13,12 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('accounts_products', function (Blueprint $table) {
+        Schema::create('account_product', function (Blueprint $table) {
             $table->id();
             $table->foreignId('account_id')->constrained();
             $table->foreignId('product_id')->constrained();
             $table->foreignId('category_id')->constrained();
             $table->string('statut',2)->default(1);
+            // $table->string('link');
+            // $table->string('photo')->nullable();
+            // $table->string('photo_dir')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accounts_products');
+        Schema::dropIfExists('account_product');
     }
 };

@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('delivery_mens', function (Blueprint $table) {
+        Schema::create('default_carriers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('accounts_carrier_id')->constrained();
-            $table->string('photo')->nullable();
-            $table->string('photo_dir')->nullable();
+            $table->foreignId('carrier_id')->constrained();
+            $table->foreignId('city_id')->constrained();
+            $table->string('name',50);
+            $table->integer('price')->length(11)->default(0);
+            $table->integer('return')->length(11)->default(0);
+            $table->integer('delivery_time')->length(11)->default(1);
             $table->integer('statut')->length(11)->default(1);
             $table->timestamps();
         });
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('delivery_mens');
+        Schema::dropIfExists('default_carriers');
     }
 };

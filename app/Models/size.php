@@ -17,4 +17,19 @@ class size extends Model
         'photo_dir',
         'type_size_id' 
     ];
+
+    public function type_size()
+    {
+        return $this->belongsTo(customer::class);
+    }
+
+    public function product_size()
+    {
+        return $this->hasMany(product_size::class);
+        
+    }
+    public function products()
+    {
+        return $this->belongsToMany(product::class );
+    }
 }

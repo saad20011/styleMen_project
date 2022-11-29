@@ -17,4 +17,11 @@ class accounts_carriers_city extends Model
         'delivery_time',
         'statut'
     ];
+    public function account_carriers(){
+        return $this->belongsTo(account_carrier::class);
+    }
+
+    public function account_cities(){
+        return $this->belongsTo(account_city::class);
+    }
 }

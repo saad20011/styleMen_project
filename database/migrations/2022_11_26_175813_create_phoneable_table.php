@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('phones', function (Blueprint $table) {
+        Schema::create('phoneables', function (Blueprint $table) {
             $table->id();
-            $table->string('phone');
-            $table->foreignId('phone_type_id')->constrained();
-            $table->foreignId('account_id')->constrained();
+            $table->foreignId('phone_id')->constrained();
+            $table->morphs('phoneable'); 
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('phones');
+        Schema::dropIfExists('phoneables');
     }
 };

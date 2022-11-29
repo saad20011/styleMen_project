@@ -12,4 +12,12 @@ class products_offer extends Model
         'product_id',
         'offer_id',
     ];
+
+    public function account_product(){
+        return $this->belongsTo(account_product::class);
+    }
+
+    public function offers(){
+        return $this->belongsTo(offer::class);
+    }
 }

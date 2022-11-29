@@ -16,18 +16,11 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('adresse_id')->constrained();
-            $table->foreignId('phone_id')->constrained();
             $table->string('note')->nullable();
             $table->foreignId('account_id')->constrained();
-            $table->foreignId('user_id')->constrained();
             $table->integer('statut')->length(11)->default(1);
-            $table->string('adresse')->nullable();
-            $table->string('phons')->nullable();
-            $table->string('whatsapphone')->nullable();
             $table->string('facebook')->nullable();
             $table->string('comment')->nullable();
-            $table->foreignId('accounts_city_id')->constrained();
             $table->timestamps();
         });
     }

@@ -15,9 +15,8 @@ return new class extends Migration
     {
         Schema::create('accounts_carriers_cities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('accounts_carrier_id')->constrained();
-            $table->foreignId('accounts_city_id')->constrained();
-            $table->string('name',50);
+            $table->foreignId('account_carrier_id')->constrained('account_carrier');
+            $table->foreignId('account_city_id')->constrained('account_city');
             $table->integer('price')->length(11)->default(0);
             $table->integer('return')->length(11)->default(0);
             $table->integer('delivery_time')->length(11)->default(1);

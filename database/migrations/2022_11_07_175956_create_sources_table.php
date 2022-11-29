@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('sources', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->constrained();
+            $table->foreignId('account_id')->constrained()->nullable();
             $table->string('title');
-            $table->string('photo')->nullable();
-            $table->string('photo_dir')->nullable();
+            // $table->string('photo')->nullable();
+            // $table->string('photo_dir')->nullable();
             $table->integer('statut')->length(11)->default(1);
             $table->timestamps();
         });

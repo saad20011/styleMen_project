@@ -16,11 +16,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('prefixe',8);
-            $table->integer('counter')->default(0)->nullable();
             $table->integer('statut')->nullable();
-            $table->string('photo')->nullable();
-            $table->string('photo_dir')->nullable();
             $table->timestamps();
         });
     }

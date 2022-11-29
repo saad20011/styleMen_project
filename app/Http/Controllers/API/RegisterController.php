@@ -71,10 +71,10 @@ class RegisterController extends BaseController
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
-        $account_only = collect($request->only('prefixe','counter', 'statut'))
+        $account_only = collect($request->only( 'statut'))
             ->put('name',$request->account_name)
-            ->put('photo',$request->account_photo)
-            ->put('photo_dir',$request->account_photo_dir)
+            // ->put('photo',$request->account_photo)
+            // ->put('photo_dir',$request->account_photo_dir)
             ->all();
 
         $account = account::create($account_only);

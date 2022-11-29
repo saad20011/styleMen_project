@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('postpone')->nullable();
             $table->foreignId('status_id')->constrained();
-            $table->foreignId('account_user_id')->constrained();
+            $table->foreignId('account_user_id')->constrained('account_user');
             $table->timestamps();
         });
     }
