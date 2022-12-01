@@ -123,4 +123,12 @@ class account extends Model
     {
         return $this->hasMany(brand::class);
     }
+    public function sources()
+    {
+        return $this->hasMany(source::class);
+    }
+    public function has_images()
+    {
+        return $this->hasMany(image::class);
+    }
 }

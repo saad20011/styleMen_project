@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('addressables', function (Blueprint $table) {
+        Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->morphs('addressable'); 
+            $table->foreignId('account_id')->constrained();
+            $table->string('title');
+            $table->string('photo');
+            $table->string('photo_dir');
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('addressables');
+        Schema::dropIfExists('images');
     }
 };

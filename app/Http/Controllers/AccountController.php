@@ -14,12 +14,11 @@ class AccountController extends Controller
     public function index(Request $request)
     {
 
-        $account = account::find(4);
-        $account->phones()->create([
-            'phone_type_id'=> 1,
-            'account_id'=>4,
-            'title'=>'0612121212',
-            ''
+        $account = account::find(1);
+        $account->images()->create([
+            'title'=> 1,
+            'photo'=>4,
+            'photo_dir'=>'0612121212',
         ]);
         $account_user = account_user::find(1)->user;
         $user = User::find(Auth::user()->id);

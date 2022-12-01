@@ -10,11 +10,10 @@ class brand_source extends Model
     use HasFactory;
     protected $table = 'brand_source';
     protected $fillable = [
-        
+
         'account_id',
         'source_id',
         'brand_id',
-        'link',
         'statut'
     ];
     public function brands(){
