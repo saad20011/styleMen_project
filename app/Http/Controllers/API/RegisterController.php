@@ -14,37 +14,38 @@ class RegisterController extends BaseController
 {
 
     // they register an new user that have already an account id
-    public function register_new_user(Request $request)
+    public function register_new_user(Request $request,int $is_account=0)
     {
-        // dd(Auth::user());
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'c_password' => 'required|same:password',
-        ]);
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
-   
+        
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $account_user = account_user::create([
-            'account_id' => $account_user->account_id,
-            'user_id' => $user->id,
-        ]);
 
-        $success['token'] =  $user->createToken('MyApp')->accessToken;
-        $success['name'] =  $user->name;
+        if($is_account=1){
+            return $user->id;   
+        }else{
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email',
+                'password' => 'required',
+                'c_password' => 'required|same:password',
+            ]);
+            if($validator->fails()){
+                return $this->sendError('Validation Error.', $validator->errors());       
+            }
+            $account_user = account_user::where('user_id',Auth::user()->id)
+                ->first(['account_id','user_id']);
 
-        return response()->json([
-            'account_user' => $account_user,
-            'new user' => $user
-        ], 200); 
+            $account_user = account_user::create([
+                'account_id' => $account_user->account_id,
+                'user_id' => $user->id,
+            ]);
+
+            return response()->json([
+                "status"=>1,
+                "data"=>"votre compte utilisateur a été bien crée"
+            ], 200); 
+        }
     }
    
     // they register an account with default user admin
@@ -53,8 +54,6 @@ class RegisterController extends BaseController
         // test commit abder
         $validator = Validator::make($request->all(), [
             'account_name' => 'required',
-            'prefixe' => 'required',
-            'counter' => 'required',
             'account_photo' => 'required',
             'account_photo_dir' => 'required',
             'statut' => '',
@@ -64,11 +63,10 @@ class RegisterController extends BaseController
             'birthday' => 'required',
             'photo' => 'required',
             'photo_dir' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'password' => 'required',
             'c_password' => 'required|same:password',
         ]);
-   
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
@@ -77,23 +75,19 @@ class RegisterController extends BaseController
             // ->put('photo',$request->account_photo)
             // ->put('photo_dir',$request->account_photo_dir)
             ->all();
-
+        $user_request=new Request($request->only('name', 'email', 'password', 'c_password', 'firstname', 'lastname', 'cin', 'birthday', 'status','is_account'));
         $account = account::create($account_only);
+        $user_id= $this->register_new_user($user_request,1);
         $request['password'] = bcrypt($request['password']);
-        $user = User::create($request->only('name', 'email', 'password', 'c_password', 'firstname', 'lastname', 'cin', 'birthday', 'status'));
         $account_user = account_user::create([
             'account_id' => $account->id,
-            'user_id' => $user->id,
+            'user_id' => $user_id,
         ]);
-        $input = $user->all();
-        $input['password'] = bcrypt($request['password']);
-        $input['token'] =  $user->createToken('MyApp')->accessToken;
-        $input['name'] =  $user->name;
 
         return response()->json([
-            'account_user' => $account,
-            'user' => $input,
-        ],200);
+            "status"=>1,
+            "data"=>"votre compte a été bien crée"
+        ], 200); 
     }
 
     public function login(Request $request)
