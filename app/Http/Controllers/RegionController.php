@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\region;
 use App\Models\account;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class RegionController extends Controller
 {
     public function index(Request $request)
     {
         $regions = region::get();
-        $region = account::find(1)->regions;
-        $account = region::find(2)->account;
-
 
         return response()->json([
-            'you'=>$region,
-            'yes'=>$account,
+            'statut'=>1,
+            'data'=>$regions,
         ]);
     }
 
@@ -28,16 +28,21 @@ class RegionController extends Controller
 
     public function store(Request $request)
     {
-        request()->validate([
+
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'statut' => 'required',
         ]);
-    
-        $region = region::create($request->all());
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
+        $region = region::create($request->only('title', 'statut'));
     
         return response()->json([
-            'statut' => 'product created successfuly',
-            'region' => $region,
+            'statut' => 1,
+            'data' => $region,
         ]);
     }
 
@@ -50,26 +55,31 @@ class RegionController extends Controller
     public function edit($id)
     {
         $region = region::find($id);
+
         return response()->json([
             'statut' => 1,
-            'region' => $region,
+            'data' => $region,
         ]);
     }
 
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'statut' => 'required'
+            'statut' => 'required',
         ]);
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
+        $region = region::find($$id)->update($request->only('title', 'statut'));
         $region = region::find($id);
-        $region->title = $request->input('title');
-        $region->statut = $request->input('statut');
-        $region->save();
+
         return response()->json([
-            'statut' => 'your phone type is updated successfuly',
-            'region' => $region,
+            'statut' => 1,
+            'data' => $region,
         ]);
     }
 
@@ -79,7 +89,7 @@ class RegionController extends Controller
         $region = region::where('id',$id)->delete();
         return response()->json([
             'statut' => 'deleted successfuly',
-            'role' => $region,
+            'data' => $region,
         ]);
     }
 }

@@ -4,30 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\carrier;
+use App\Models\account;
 use App\Models\User;
-use App\Models\phone;
-use App\Models\adresse;
-use App\Models\accounts_carrier;
-use App\Models\accounts_city;
-use App\Models\accounts_carriers_city;
-use App\Models\account_user;
-use Validator;
-use Auth;
-use DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 class CarrierController extends Controller
 {
 
     public function index(Request $request)
     {
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-
-        $carriers = DB::table('accounts_carriers')
-            ->join('carriers', function($join) use($account_user){
-                $join->on('accounts_carriers.carrier_id', '=', 'carriers.id')
-                    ->where('accounts_carriers.account_id', '=', $account_user->account_id);
-        })->select('carriers.*')
-            ->get();
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $carriers = account::find($account->id)->carriers;
 
         return response()->json([
             'statut' => 1,
@@ -44,13 +32,9 @@ class CarrierController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'title' => 'required',
-            'phone_id' => 'required',
-            'adresse_id' => 'required',
             'email' => 'required',
             'trackinglink' => 'required',
             'autocode' => 'required',
-            'photo' => 'required',
-            'photo_dir' => 'required',
             'comment' => 'required',
             'statut'=>'required',
         ]);
@@ -59,27 +43,16 @@ class CarrierController extends Controller
                 'Validation Error'=> $validator->errors()
             ]);
         };
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        
-        $carrier_only = collect($request
-            ->only('title', 'phone_id', 'adresse_id', 'email', 'trackinglink', 'autocode', 'photo', 'photo_dir', 'comment', 'statut')
-            )->put('account_id',$account_user->account_id)
-            ->put('user_id',$account_user->user_id)
-            ->all();
-            
-        $carrier = carrier::create($carrier_only);
-        $account_carrier = accounts_carrier::create([
-            'carrier_id' => $carrier['id'],
-            'account_id'=> $account_user->account_id ,
-            'autocode'=>$request['autocode'],
-            'statut'=>$request['statut'],
-        ]); 
+        $account = User::find(Auth::user()->id)->accounts->first();
 
+        $carrier = account::find($account->id)->carriers()->create($request->all());
+        $account->carriers()->attach([1=>[
+            'autocode'=> 1,
+            'statut'=>1
+        ]]);
         return response()->json([
-            'statut' => 'product created successfuly',
-            'carrier' => $carrier,
-            $account_carrier
+            'statut' => 1,
+            'data' => $carrier,
         ]);
     }
     public function show($id)
@@ -89,10 +62,11 @@ class CarrierController extends Controller
 
     public function edit($id)
     {
+        $account = User::find(Auth::user()->id)->accounts->first();
         $carrier = carrier::find($id);
         return response()->json([
             'statut' => 1,
-            'carrier' => $carrier
+            'data' => $carrier
         ]);
     }
 
@@ -101,27 +75,21 @@ class CarrierController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'title' => 'required',
-            'phone' => 'required',
-            'adresse' => 'required',
             'email' => 'required',
             'trackinglink' => 'required',
             'autocode' => 'required',
-            'photo' => 'required',
-            'photo_dir' => 'required',
             'comment' => 'required',
             'statut' => 'required',
-            'user_id' => 'required',
         ]);
         if($validator->fails()){
             return response()->json([
                 'Validation Errors' => $validator->errors()
             ]);
         }
-        $carr_col = collect($request->all())
-            ->only('title','email','trackinglink','autocode','photo','photo_dir','comment','statut')
-            ->all();
+        $account = User::find(Auth::user()->id)->accounts->first();
         $carrier = carrier::find($id)
-            ->update($carr_col);
+            ->where('account_id', $account->id)
+            ->update($request->all());
         $carrier_updated = carrier::find($id);
         return response()->json([
             'statut' => $carrier,

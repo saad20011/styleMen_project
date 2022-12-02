@@ -18,10 +18,9 @@ class BrandSourceController extends Controller
         //
     }
 
-    public static function create($account_id, $columns)
+    public static function create()
     {
-        $brand = account::find($account_id)->brands()->create($columns);
-        return $brand;
+        //
     }
 
     public function store(Request $request)
@@ -58,12 +57,10 @@ class BrandSourceController extends Controller
     foreach($sources as $source ){
         $exist = collect($brand_sources)->contains('source_id',$source);
         if($exist == false ){
-        $brand->brand_sources()->create([
-                'source_id'=> $source,
-                'brand_id' => $brand->id,
-                'account_id'=> $account_id,
-                'statut'=>1,
-            ]);
+        $brand->sources()->attach($source, [
+            'account_id'=> $account_id,
+            'statut'=>1,
+        ]);
         }
     }
     return true;

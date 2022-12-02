@@ -4,22 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\source;
-use App\Models\account_user;
-use Auth;
-use Validator;
-use DB;
+use App\Models\User;
+use App\Models\account;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
 class sourceController extends Controller
 {
     public function index(Request $request)
     {
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        $sources = source::where('account_id', $account_user->account_id)
-            ->get();
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $sources = account::find($account->id)->sources()->paginate(20);
 
         return response()->json([
             'statut' => 1,
-            'sources ' => $sources,
+            'data' => $sources,
         ]);
     }
 
@@ -32,8 +31,6 @@ class sourceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'photo' => 'required',
-            'photo_dir' => 'required',
             'statut' => 'required'
         ]);
         if($validator->fails()){
@@ -41,23 +38,12 @@ class sourceController extends Controller
                 'Validation Error', $validator->errors()
             ]);       
         };
-        $account_user = DB::table('account_users')
-            ->join('users','users.id', '=', 'account_users.user_id')
-            ->join('accounts','accounts.id', '=', 'account_users.account_id')
-            ->where('users.id',Auth::user()->id)
-            ->select('accounts.name as account_name',
-                    'accounts.id as account_id',
-                    'users.id as user_id'
-            )->first();
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        $source_only = collect($request->only('title','website','email','photo','photo_dir','statut'))
-            ->put('account_id',$account_user->account_id)->all();
-        $source = source::create($source_only);
-    
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $source = account::find($account->id)->sources()->create($request->all());
+
         return response()->json([
-            'statut' => 'product created successfuly',
-            'source' => $source,
+            'statut' => 1,
+            'data' => $source,
         ]);
     }
 
@@ -69,10 +55,17 @@ class sourceController extends Controller
 
     public function edit($id)
     {
-        $source = source::find($id);
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $source = source::where(['id'=>$id, 'account_id'=> $account->id])
+                    ->first();
+        if(!$source)
+            return response()->json([
+                'statut' => 0,
+                'data' => 'not found',
+            ]);
         return response()->json([
             'statut' => 1,
-            'source' => $source,
+            'data' => $source,
         ]);
     }
 
@@ -81,31 +74,27 @@ class sourceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'photo' => 'required',
-            'photo_dir' => 'required',
             'statut' => 'required'
         ]);
         if($validator->fails()){
             return response()->json([
                 'Validation Error', $validator->errors()
             ]);       
-        };
-        $account_user = DB::table('account_users')
-        ->join('users','users.id', '=', 'account_users.user_id')
-        ->join('accounts','accounts.id', '=', 'account_users.account_id')
-        ->where('users.id',Auth::user()->id)
-        ->select('accounts.name as account_name',
-                'accounts.id as account_id',
-                'users.id as user_id'
-        )->first();
-        $source_only = collect($request->only('title','website','email','photo','photo_dir','statut'));
+        };<
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $source = source::where(['id'=>$id, 'account_id'=> $account->id])->first();
+        if(!$source)
+            return response()->json([
+                'statut' => 0,
+                'data' => 'not found',
+            ]);
 
-        $source = source::find($id)->update($source_only->all());
-        $source_updated = source::where('id',$id)->get();
+        $source->update($request->all());
+        $source_updated = source::find($id);
 
         return response()->json([
             'statut' => 1,
-            'source' => $source_updated,
+            'data' => $source_updated,
         ]);
     }
 

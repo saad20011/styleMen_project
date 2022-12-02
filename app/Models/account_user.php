@@ -100,6 +100,11 @@ class account_user extends Model
         return $this->hasMany(supplier_receipt::class);
         
     }
+    public function categories()
+    {
+        return $this->hasMany(categorie::class);
+        
+    }
     public function suppliers_supplier_receipt()
     {
         return $this->belongsToMany(account_user::class, 'supplier_receipts')

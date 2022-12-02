@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class account_carrier extends Model
 {
     use HasFactory;
+    // protected $fillable = [
+    //     'autocode',
+    //     'statut'
+    // ];
     protected $table = 'account_carrier' ;
+
 
     public function carriers(){
         return $this->belongsTo(carrier::class);
