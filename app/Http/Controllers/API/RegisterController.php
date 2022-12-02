@@ -50,7 +50,7 @@ class RegisterController extends BaseController
     // they register an account with default user admin
     public function register_new_account(Request $request)
     {
-        // test commit
+        // test commit abder
         $validator = Validator::make($request->all(), [
             'account_name' => 'required',
             'prefixe' => 'required',
