@@ -5,24 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\offer;
 use App\Models\User;
+use App\Models\account;
 use App\Models\account_user;
-use Validator;
-use Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
-class OffersController extends Controller
+class OfferController extends Controller
 {
 
     public function index(Request $request)
     {
         
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        $offers = offer::where('account_id',$account_user->account_id)
-            ->get();
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $offers = account::find($account->id)->offers;
 
         return response()->json([
             'statut' => 1,
-            'offer' => $offers,
+            'data' => $offers,
         ]);
     }
 
@@ -39,9 +38,8 @@ class OffersController extends Controller
             'price' => 'required',
             'shipping_price' => 'required',
             'statut' => 'required',
-            'brand_id' => 'required',
+            'brand_id' => 'exists:brands,id',
         ]);
-
         if($validator->fails()){
             return response()->json([
                 'Validation Error', $validator->errors()

@@ -8,30 +8,29 @@ use App\Models\city;
 use App\Models\User;
 use App\Models\account;
 use App\Models\region;
-use Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class CityController extends Controller
 {
 
     public function index(Request $request)
     {
-        $account = User::find(24);
-        $cities = account::with('sources', 'carriers', 'products', 'cities')->find($account->id);
+        $cities = city::get();
 
         return response()->json([
             'statut ' => 1,
-            'cities ' => $cities,
-            'account ' => $account,
+            'data' => $cities,
         ]);
     }
 
     public function create(Request $request)
     {
-        $cities = region::get();
+        $regions = region::get();
 
         return response()->json([
             'statut ' => 1,
-            'cities ' => $cities
+            'data ' => $regions
         ]);
     }
 
@@ -41,8 +40,6 @@ class CityController extends Controller
             '*.title' => 'required',
             '*.statut' => 'required',
             '*.region_id' => 'required',
-            '*.preferred' => 'required',
-            '*.account_id' => 'required'
         ]);
         if($validator->fails()){
             return response()->json([
@@ -50,22 +47,14 @@ class CityController extends Controller
             ]);       
         };
         $cities = collect($request->all())->map(function ($city) {
-            $city_only = collect($city)->only('title','statut','region_id','preferred')->toArray();
-            $city_row = city::create($city);
-            $accounts_city = accounts_city::create([
-                'city_id'=>$city_row['id'],
-                'account_id'=>$city['account_id'],
-                'preferred'=>$city['preferred'],
-                'statut'=>$city['statut'],
-            ]);
-            return ['city' => $city_row, 'account_city' => $accounts_city];
+            $city_only=collect($city)->only('title','statut','region_id');
+            $city = city::create($city_only->all());
+            return $city;
         });
 
-
-
         return response()->json([
-            'statut' => 'product created successfuly',
-            'city ' =>  $cities,
+            'statut' => 1,
+            'data' =>  $cities,
         ]);
     }
 
@@ -77,34 +66,34 @@ class CityController extends Controller
 
     public function edit($id)
     {
-        $city = city::where('id',$id)->first();
+        $city = city::find($id);
 
         return response()->json([
             'statut' => 1,
-            'city' => $city
+            'data' => $city
         ]);
     }
 
     public function edit_all_cities(Request $request)
     {
-        $cities = accounts_city::where('account_id',$request->account_id)->get('city_id');
-        $cities_acount = city::whereIn('id',$cities)->get();
-
+        $cities = city::with('regions')->get();
         $regions = region::get();
+
         return response()->json([
             'statut' => 1,
-            'cities_acount' => $cities_acount,
+            'cities' => $cities,
+            'regions'=>$regions,
 
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id,$local=false)
     {
         $validator = Validator::make($request->all(), [
+            'id'=>'required',
             'title' => 'required',
             'statut' => 'required',
             'region_id' => 'required',
-            'preferred' => 'required',
         ]);
         if($validator->fails()){
             return response()->json([
@@ -112,14 +101,17 @@ class CityController extends Controller
             ]);       
         };
 
-        $city_col = collect($request->all())->only('title','statut','region_id','preferred')->all();
-        $city = city::find($id)->update($city_col);
-        $city_updated = city::find($id);
-
-        return response()->json([
-            'statut' => 'your city is updated successfuly',
-            'city' => $city_updated,
-        ]);
+        $city_col = collect($request->all())->only('title','statut','region_id')->all();
+        $city = city::find($request->id)->update($city_col);
+        $city_updated = city::find($request->id);
+        if(!$local){
+            return response()->json([
+                'statut' => 'your city is updated successfuly',
+                'city' => $city_updated,
+            ]);
+        }else{
+        return $city_updated;
+    }
     }
 
     public function update_all_cities(Request $request)
@@ -129,22 +121,16 @@ class CityController extends Controller
             '*.title' => 'required',
             '*.statut' => 'required',
             '*.region_id' => 'required',
-            '*.preferred' => 'required'
         ]);
         if($validator->fails()){
             return response()->json([
                 'Validation Error', $validator->errors()
             ]);       
         };
-        $cities = collect($request->all())->map(function ($city) {
-            $city_row = city::find($city['id']);
-            $city_row->title = $city['title'];
-            $city_row->statut = $city['statut'];
-            $city_row->region_id = $city['region_id'];
-            $city_row->preferred = $city['preferred'];
-            $city_row->save();
-            return $city_row;
-        });
+        foreach($request->all() as $city){
+            $city_re = new Request($city);
+            $cities = $this->update($city_re,$local=true);
+        }
 
         return response()->json([
             'statut' => 1,

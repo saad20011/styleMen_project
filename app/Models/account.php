@@ -27,7 +27,7 @@ class account extends Model
 
     public function carriers()
     {
-        return $this->belongsToMany(carrier::class);
+        return $this->belongsToMany(carrier::class, 'account_carrier');
         
     }
 

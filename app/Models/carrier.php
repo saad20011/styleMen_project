@@ -10,17 +10,13 @@ class carrier extends Model
     use HasFactory;
 
     protected $fillable = [
+        'account_id',
         'title',
-        'phone_id',
-        'adresse_id',
         'email',
         'trackinglink',
         'autocode',
-        'photo',
-        'photo_dir',
         'comment',
         'statut',
-        'user_id'
     ];
 
     public function accounts()

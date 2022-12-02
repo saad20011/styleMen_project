@@ -14,9 +14,14 @@ class city extends Model
         'region_id',
         'preferred',
     ];
-    public function cities()
+    public function accounts()
     {
-        return $this->belongsToMany(account::class);
+        return $this->belongsToMany(account::class, 'account_city');
+        
+    }
+    public function regions()
+    {
+        return $this->belongsTo(region::class,'region_id');
         
     }
     public function account_city()

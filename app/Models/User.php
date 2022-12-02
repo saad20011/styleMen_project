@@ -51,10 +51,14 @@ class User extends Authenticatable
     ];
     public function accounts()
     {
-        return $this->belongsToMany(account::class);
+        return $this->belongsToMany(account::class, 'account_user');
 
     }
+    public function account_user()
+    {
+        return $this->hasMany(account_user::class);
 
+    }
     public function phones()
     {
         return $this->morphToMany(phone::class, 'phoneable');

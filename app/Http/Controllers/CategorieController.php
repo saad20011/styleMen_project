@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\categorie;
 use App\Models\User;
 use App\Models\account_user;
-use App\Models\account;
 use Auth;
 use Validator;
 class CategorieController extends Controller
@@ -17,10 +16,8 @@ class CategorieController extends Controller
 
     public function index(Request $request)
     {
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        $categories = categorie::where('account_id',$account_user->account_id)
-            ->get();
+        $account_user = User::find(Auth::user()->id)->account_user->first();
+        $categories = account_user::find($account_user->id)->categories;
 
         return response()->json([
             'categories '=>$categories,
@@ -38,8 +35,6 @@ class CategorieController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'statut' => 'required',
-            'photo' => '',
-            'photo_dir' => '',
         ]);
 
         if($validator->fails()){
@@ -48,18 +43,19 @@ class CategorieController extends Controller
             ]);       
         };
         
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
+        $account_user = User::find(Auth::user()->id)->account_user->first();
+
         
-        $categorie_only = collect($request->only('title','statut', 'photo', 'photo_dir'))
-            ->put('account_id',$account_user->account_id)
-            ->put('user_id',$account_user->user_id)
+        $categorie_only = collect($request->only('title','statut'))
+            ->put('account_user_id', $account_user->id)
             ->all();
-        $categorie = categorie::create($categorie_only);
-    
+        $categorie = account_user::find($account_user->id)
+            ->categories()
+            ->create($categorie_only);
+
         return response()->json([
-            'statut' => 'categorie created successfuly',
-            'categorie' => $categorie,
+            'statut' => 1,
+            'data' => $categorie,
         ]);
     }
 
@@ -71,11 +67,11 @@ class CategorieController extends Controller
 
     public function edit($id)
     {
-        $categorie = categorie::find($id);
-
+        $account_user = User::find(Auth::user()->id)->account_user->first();
+        $categories = account_user::find($account_user->id)->categories;
         return response()->json([
             'statut' => 0,
-            'categorie ' => $categorie
+            'data ' => $categories
         ]);
 
     }
@@ -85,8 +81,7 @@ class CategorieController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'statut' => 'required',
-            'photo' => '',
-            'photo_dir' => '',
+
         ]);
 
         if($validator->fails()){
@@ -94,14 +89,11 @@ class CategorieController extends Controller
                 'Validation Error', $validator->errors()
             ]);       
         };
+        $account_user = User::find(Auth::user()->id)->account_user->first();
 
-        $account_user = account_user::where('user_id',Auth::user()->id)
-        ->first(['account_id','user_id']);
-    
         $categorie_only = collect($request->all())
-            ->only('title','statut','photo','photo_dir')
-            ->put('account_id', $account_user->account_id)
-            ->put('user_id', $account_user->user_id)
+            ->only('title','statut')
+            ->put('account_user_id', $account_user->id)
             ->all();
         $categorie = categorie::find($id)
             ->update($categorie_only);
@@ -109,7 +101,7 @@ class CategorieController extends Controller
 
         return response()->json([
             'statut' => 1,
-            'categorie' => $categorie_updated,
+            'data' => $categorie_updated,
         ]);
     }
 
@@ -120,7 +112,7 @@ class CategorieController extends Controller
         $categorie = categorie::find($id)->delete();
         return response()->json([
             'statut' => 'deleted successfuly',
-            'categorie' => $categorie_b,
+            'data' => $categorie_b,
         ]);
     }
 }

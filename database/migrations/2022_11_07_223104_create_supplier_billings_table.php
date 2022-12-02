@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('code');
             $table->foreignId('supplier_id')->constrained();
             $table->foreignId('account_user_id')->constrained('account_user');
-            // $table->foreignId('account_id')->constrained();
             $table->string('montant');
             $table->string('comment');
             $table->integer('status');
