@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('phoneables', function (Blueprint $table) {
             $table->id();
             $table->foreignId('phone_id')->constrained();
-            $table->morphs('phoneable'); 
+            $table->morphs('phoneable');
+            $table->integer('statut')->length(2)->default(1);
             $table->timestamps();
         });
     }

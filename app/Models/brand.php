@@ -18,14 +18,15 @@ class brand extends Model
         'account_id'
     ];
 
-    public function brand_source()
+    public function brand_sources()
     {
         return $this->hasMany(brand_source::class);
         
     }
     public function sources()
     {
-        return $this->belongsToMany(source::class);
+        return $this->belongsToMany(source::class)
+            ->wherePivot('statut', 1);
     }
 
     public function offers()
@@ -35,11 +36,13 @@ class brand extends Model
 
     public function images()
     {
-        return $this->morphToMany(image::class, 'imageable');
+        return $this->morphToMany(image::class, 'imageable')
+            ->wherePivot('statut', 1);
+    }
+    public function imageables()
+    {
+
+        return $this->hasMany(imageable::class, 'imageable_id', 'id');
     }
 
-    // public function account_offers()
-    // {
-    //     return $this->belongsToMany(account::class, 'offers');
-    // }
 }
