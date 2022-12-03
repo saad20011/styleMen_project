@@ -14,6 +14,7 @@ class AccountController extends Controller
     public function index(Request $request)
     {
         $accounts = account::get();
+        //test
         $account = account::find(1);
         $account->images()->create([
             'title'=> 1,

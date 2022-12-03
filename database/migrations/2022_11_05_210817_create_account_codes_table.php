@@ -16,11 +16,12 @@ return new class extends Migration
         //change name account_code
         Schema::create('account_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('name');
+            $table->string('controleur');
+            $table->string('prefixe');
             $table->foreignId('account_id')->constrained();
+            $table->integer('compteur')->length(11)->default(0);
             $table->integer('statut')->length(11)->default(1);
-            $table->integer('current_statut')->length(11);
-            $table->integer('postponed')->length(11);
             $table->timestamps();
         });
     }

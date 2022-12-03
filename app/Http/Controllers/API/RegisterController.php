@@ -9,6 +9,7 @@ use App\Models\account;
 use App\Models\city;
 use App\Models\account_user;
 use App\Models\account_city;
+use App\Models\account_code;
 use Validator;
 use Auth;
 
@@ -80,6 +81,7 @@ class RegisterController extends BaseController
         foreach($cities as $city){
             $account_city = $account->cities()->attach($city);
         }
+
         //creation des depots
         $account->depots()->createMany([
             [
@@ -94,6 +96,59 @@ class RegisterController extends BaseController
                 'maximum'=>2000,
                 'statut'=>2
             ],
+        ]);
+
+        $account->account_codes()->createMany([
+            [
+                'name'=>'Commandes',
+                'controleur'=>'Orders',
+                'prefixe'=>'CMD',
+                'compteur'=>0,
+                'statut'=>1
+            ],
+            [
+                'name'=>'Bons de rammassage',
+                'controleur'=>'Pickups',
+                'prefixe'=>'PK',
+                'compteur'=>0,
+                'statut'=>1
+            ],
+            [
+                'name'=>'Factures',
+                'controleur'=>'Invoices',
+                'prefixe'=>'INV',
+                'compteur'=>0,
+                'statut'=>1
+            ],
+            [
+                'name'=>'Commande Fournisseur',
+                'controleur'=>'SupplierOrders',
+                'prefixe'=>'SCMD',
+                'compteur'=>0,
+                'statut'=>1
+            ],
+            [
+                'name'=>'Bon de réception Fournisseur',
+                'controleur'=>'SupplierReceipts',
+                'prefixe'=>'SREC',
+                'compteur'=>0,
+                'statut'=>1
+            ],
+            [
+                'name'=>'Factures Fournisseur',
+                'controleur'=>'SupplierBillings',
+                'prefixe'=>'SBIL',
+                'compteur'=>0,
+                'statut'=>1
+            ],
+            [
+                'name'=>'Paeiments Commission',
+                'controleur'=>'PaymentCommissions',
+                'prefixe'=>'COM',
+                'compteur'=>0,
+                'statut'=>1
+            ]
+            
         ]);
         
         return response()->json([

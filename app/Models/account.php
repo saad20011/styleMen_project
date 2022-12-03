@@ -12,8 +12,6 @@ class account extends Model
 
     protected $fillable = [
         'name',
-        'prefixe',
-        'counter',
         'statut',
         'photo',
         'photo_dir'
@@ -66,6 +64,12 @@ class account extends Model
     public function account_carriers()
     {
         return $this->hasMany(account_carrier::class);
+        
+    }
+
+    public function account_codes()
+    {
+        return $this->hasMany(account_code::class);
         
     }
 
