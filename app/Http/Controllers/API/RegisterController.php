@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
 use App\Models\account;
+use App\Models\city;
 use App\Models\account_user;
+use App\Models\account_city;
 use Validator;
 use Auth;
 
@@ -14,32 +16,33 @@ class RegisterController extends BaseController
 {
 
     // they register an new user that have already an account id
-    public function register_new_user(Request $request,int $is_account=0)
+    public function register_new_user(Request $request,int $is_account=0,$account=null )
     {
         
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
 
-        if($is_account=1){
+        if($is_account==1){
+            $user = User::create($input);
+            $account_user = $account->users()->attach($user);
             return $user->id;   
         }else{
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
-                'email' => 'required|email',
+                'email' => 'required|email|unique:users',
+                'firstname' => 'required',
+                'lastname' => 'required',
+                'cin' => 'required',
+                'birthday' => 'required',
                 'password' => 'required',
                 'c_password' => 'required|same:password',
             ]);
             if($validator->fails()){
                 return $this->sendError('Validation Error.', $validator->errors());       
             }
-            $account_user = account_user::where('user_id',Auth::user()->id)
-                ->first(['account_id','user_id']);
-
-            $account_user = account_user::create([
-                'account_id' => $account_user->account_id,
-                'user_id' => $user->id,
-            ]);
+            $user = User::create($input);
+            $account = User::find(Auth::user()->id)->accounts->first();
+            $account_user = $account->users()->attach($user);   
 
             return response()->json([
                 "status"=>1,
@@ -53,16 +56,13 @@ class RegisterController extends BaseController
     {
         // test commit abder
         $validator = Validator::make($request->all(), [
-            'account_name' => 'required',
-            'account_photo' => 'required',
-            'account_photo_dir' => 'required',
+            'name' => 'required',
             'statut' => '',
+            'status' => '',
             'firstname' => 'required',
             'lastname' => 'required',
             'cin' => 'required',
             'birthday' => 'required',
-            'photo' => 'required',
-            'photo_dir' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required',
             'c_password' => 'required|same:password',
@@ -70,20 +70,32 @@ class RegisterController extends BaseController
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
-        $account_only = collect($request->only( 'statut'))
-            ->put('name',$request->account_name)
-            // ->put('photo',$request->account_photo)
-            // ->put('photo_dir',$request->account_photo_dir)
-            ->all();
+        //creation du compte
+        $account = account::create($request->only('name' ,'statut'));
+        //creation de l'utilisateur
         $user_request=new Request($request->only('name', 'email', 'password', 'c_password', 'firstname', 'lastname', 'cin', 'birthday', 'status','is_account'));
-        $account = account::create($account_only);
-        $user_id= $this->register_new_user($user_request,1);
-        $request['password'] = bcrypt($request['password']);
-        $account_user = account_user::create([
-            'account_id' => $account->id,
-            'user_id' => $user_id,
+        $this->register_new_user($user_request,1,$account);
+        //creation des account_city
+        $cities=city::get();
+        foreach($cities as $city){
+            $account_city = $account->cities()->attach($city);
+        }
+        //creation des depots
+        $account->depots()->createMany([
+            [
+                'code'=>'STK1',
+                'name'=>'STOCK PRINCIPALE',
+                'maximum'=>200000,
+                'statut'=>1
+            ],
+            [
+                'code'=>'STK2',
+                'name'=>'STOCK ENDOMAGEE',
+                'maximum'=>2000,
+                'statut'=>2
+            ],
         ]);
-
+        
         return response()->json([
             "status"=>1,
             "data"=>"votre compte a été bien crée"
