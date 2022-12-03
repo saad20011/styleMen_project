@@ -13,27 +13,13 @@ class AccountController extends Controller
 
     public function index(Request $request)
     {
-<<<<<<< HEAD
-        $accounts = account::get();
-        //test
-=======
+        // return response()->json([
+        //     // 'statut' => 1,
+        //     // 'account_user' => $account_user,
+        //     // 'user' => $user->accounts,
+        //     'phone' => $account->phones,
 
-        $account = account::find(1);
-        $account->images()->create([
-            'title'=> 1,
-            'photo'=>4,
-            'photo_dir'=>'0612121212',
-        ]);
-        $account_user = account_user::find(1)->user;
-        $user = User::find(Auth::user()->id);
->>>>>>> 5e860d53fec05cdd494fb3616056fbbf8dd2c334
-        return response()->json([
-            // 'statut' => 1,
-            // 'account_user' => $account_user,
-            // 'user' => $user->accounts,
-            'phone' => $account->phones,
-
-        ]);
+        // ]);
     }
 
     public function create(Request $request)

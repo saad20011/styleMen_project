@@ -44,8 +44,8 @@ class CarrierController extends Controller
             ]);
         };
         $account = User::find(Auth::user()->id)->accounts->first();
-
-        $carrier = account::find($account->id)->carriers()->create($request->all());
+        $carrier_acc = collect($request->all())->put('account_id', $account->id);
+        $carrier = account::find($account->id)->carriers()->create($carrier_acc->all());
         $account->carriers()->attach([1=>[
             'autocode'=> 1,
             'statut'=>1

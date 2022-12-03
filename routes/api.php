@@ -28,7 +28,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\DeliveryMenController;
 use App\Http\Controllers\SupplierOrderController;
-use App\Http\Controllers\OffersController;
+use App\Http\Controllers\OfferController;
 
 
 /*
@@ -78,7 +78,7 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('brand_source', SourceController::class);
     Route::resource('delivery_men', DeliveryMenController::class);
     Route::resource('supplier_order', SupplierOrderController::class);
-    Route::resource('offer', OffersController::class);
+    Route::resource('offer', OfferController::class);
 
 
     // Route::resource('products', ProductController::class);

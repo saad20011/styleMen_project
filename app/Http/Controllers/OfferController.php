@@ -18,10 +18,9 @@ class OfferController extends Controller
         
         $account = User::find(Auth::user()->id)->accounts->first();
         $offers = account::find($account->id)->offers;
-
         return response()->json([
             'statut' => 1,
-            'data' => $offers,
+            'offer' => $offers,
         ]);
     }
 
@@ -38,8 +37,9 @@ class OfferController extends Controller
             'price' => 'required',
             'shipping_price' => 'required',
             'statut' => 'required',
-            'brand_id' => 'exists:brands,id',
+            'brand_id' => 'required',
         ]);
+
         if($validator->fails()){
             return response()->json([
                 'Validation Error', $validator->errors()

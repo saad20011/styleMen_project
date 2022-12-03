@@ -31,7 +31,16 @@ class product_size extends Model
         return $this->hasMany(supplier_order_product_size::class);
         
     }
-
+    public function product_depot()
+    {
+        return $this->hasMany(product_depot::class);
+        
+    }
+    public function depots()
+    {
+        return $this->belongsToMany(depot::class, 'product_depot');
+        
+    }
     public function product_orders()
     {
         return $this->belongsToMany(product_order::class, 'supplier_order_product_size');

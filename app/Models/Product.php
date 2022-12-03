@@ -28,13 +28,16 @@ class Product extends Model
     {
         return $this->hasMany(product_supplier::class);
         
+  
     }
-    
     public function sizes()
     {
         return $this->belongsToMany(size::class );
     }
-    
+    public function depots()
+    {
+        return $this->belongsToMany(depot::class, 'product_depot' );
+    }
     public function suppliers()
     {
         return $this->belongsToMany(supplier::class );
@@ -42,11 +45,24 @@ class Product extends Model
 
     public function offers()
     {
-        return $this->belongsTo(offer::class );
+        return $this->belongsToMany(offer::class, 'product_offer' );
     }
 
-    public function account_products()
+    public function account_product()
     {
-        return $this->belongsTo(account_product::class );
+        return $this->hasMany(account_product::class);
     }
+
+    public function images()
+    {
+        return $this->morphToMany(image::class, 'imageable');
+            // ->wherePivot('statut', 1)
+            // ->withPivot('statut');
+    }
+    
+    // public function imageables()
+    // {
+
+    //     return $this->hasMany(imageable::class, 'imageable_id', 'id');
+    // }
 }

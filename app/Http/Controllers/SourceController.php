@@ -80,7 +80,7 @@ class sourceController extends Controller
             return response()->json([
                 'Validation Error', $validator->errors()
             ]);       
-        };<
+        };
         $account = User::find(Auth::user()->id)->accounts->first();
         $source = source::where(['id'=>$id, 'account_id'=> $account->id])->first();
         if(!$source)
