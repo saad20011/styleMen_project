@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class depot extends Model
 {
     use HasFactory;
+    //hadi bach nqder n ajouter plusieur depot f fonction create_new_account
+    protected $guarded = [];   
 
     public function accounts()
     {
         return $this->belongsTo(account::class);
     }
-    
 }

@@ -13,6 +13,7 @@ class AccountController extends Controller
 
     public function index(Request $request)
     {
+<<<<<<< HEAD
         // return response()->json([
         //     // 'statut' => 1,
         //     // 'account_user' => $account_user,
@@ -20,6 +21,25 @@ class AccountController extends Controller
         //     'phone' => $account->phones,
 
         // ]);
+=======
+        $accounts = account::get();
+        //test
+        $account = account::find(1);
+        $account->images()->create([
+            'title'=> 1,
+            'photo'=>4,
+            'photo_dir'=>'0612121212',
+        ]);
+        $account_user = account_user::find(1)->user;
+        $user = User::find(Auth::user()->id);
+        return response()->json([
+            // 'statut' => 1,
+            // 'account_user' => $account_user,
+            // 'user' => $user->accounts,
+            'phone' => $account->phones,
+
+        ]);
+>>>>>>> 6fde9e342c7969b11858b0bc43c29137411372b2
     }
 
     public function create(Request $request)
