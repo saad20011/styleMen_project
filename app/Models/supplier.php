@@ -22,14 +22,23 @@ class supplier extends Model
     {
         return $this->morphToMany(phone::class, 'phoneable');
     }
+    public function has_phones()
+    {
+        return $this->hasMany(phone::class);
+    }
     public function images()
     {
         return $this->morphToMany(image::class, 'imageable');
     }
 
+    public function has_images()
+    {
+        return $this->hasMany(image::class);
+    }
+
     public function addresses()
     {
-        return $this->morphToMany(addresse::class, 'addressable');
+        return $this->morphToMany(address::class, 'addressable');
     }
 
     public function accounts()

@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class adresse extends Model
+class address extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'adresse','city_id'
+        'address','account_city_id'
     ] ;
     
     public function accounts()
@@ -30,5 +30,9 @@ class adresse extends Model
     public function customers()
     {
         return $this->morphedByMany(customer::class, 'addressable');
+    }
+    public function account_city()
+    {
+        return $this->belongsTo(account_city::class);
     }
 }

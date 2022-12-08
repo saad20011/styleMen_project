@@ -4,63 +4,60 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\phone;
-use App\Models\phone_type;
-use App\Models\account_user;
-use Validator;
-use Auth;
+use App\Models\User;
+use App\Models\account;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class PhoneController extends Controller
 {
 
     public function index(Request $request)
     {
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        $phones = phone::where('account_id',$account_user->account_id)
-            ->get();
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $phones = account::find($account->id)->phones;
 
         return response()->json([
             'statut' => 1,
-            'phones' => $phones,
+            'data' => $phones,
         ]);
     }
 
     public function create(Request $request)
     {
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-
-        $phone_types = phone_type::where('account_id',$account_user->account_id)
-            ->get();
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $phone_types = account::find($account->id)->phone_types;
 
             return response()->json([
             'statut' => 1,
-            'phone_types' => $phone_types,
+            'data' => $phone_types,
         ]);
     }
 
-    public function store(Request $request)
+    public static function store(Request $request, $local=0, $table=null)
     {
+        if($local == 0){
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required',
+                'phone_type_id' => 'required',
+            ]);
 
-        $validator = Validator::make($request->all(), [
-            'phone' => 'required',
-            'phone_type_id' => 'required',
+            if($validator->fails()){
+                return response()->json([
+                    'Validation Error', $validator->errors()
+                ]);       
+            };
+        }
+
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $phone = $account->has_phones()->create([
+            'phone_type_id' => $request->phone_type_id,
+            'title' => $request->phone
         ]);
-
-        if($validator->fails()){
-            return response()->json([
-                'Validation Error', $validator->errors()
-            ]);       
-        };
-
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-
-        $phone_only = collect($request->only('phone', 'phone_type_id'))
-            ->put('account_id',$account_user->account_id)
-            ->all();
-
-        $phone = phone::create($phone_only);    
+        if($local ==1 )
+            $table->phones()->attach($phone->id);
+            return $phone;
+        
         return response()->json([
             'statut' => 1,
             'phone' => $phone,
@@ -75,51 +72,42 @@ class PhoneController extends Controller
 
     public function edit($id)
     {
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        $phone = phone::where('account_id',$account_user->account_id)
-            ->where('id',$id)->get();
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $phone = account::where(['account_id' => $account->id, 'id' => $id])
+            ->first();
 
-        $phone_types = phone_type::where('account_id',$account_user->account_id)
-            ->get();
-
-            return response()->json([
+        return response()->json([
             'statut' => 1,
-            'phone' => $phone,
-            'phone_types' => $phone_types,
+            'data' => $phone
         ]);
     }
 
 
-    public function update(Request $request, $id)
+    public static function update(Request $request, $local = 0, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'phone' => 'required',
-            'phone_type_id' => 'required',
-        ]);
+        if($local = 0){
+            $validator = Validator::make($request->all(), [
+                'title' => 'required',
+            ]);
 
-        if($validator->fails()){
-            return response()->json([
-                'Validation Error', $validator->errors()
-            ]);       
-        };
+            if($validator->fails()){
+                return response()->json([
+                    'Validation Error', $validator->errors()
+                ]);       
+            };
+        }
 
-        $account_user = account_user::where('user_id',Auth::user()->id)
-        ->first(['account_id','user_id']);
-    
-        $offer_only = collect($request->all())
-            ->only('phone', 'phone_type_id')
-            ->put('account_id', $account_user->account_id)
-            ->all();
-            
-        $offer = phone::find($id)
-            ->update($offer_only);
-
-        $offer_updated = phone::find($id);
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $phone = phone::find($id)
+            ->where(['id'=>$id, 'account_id'=> $account->id])
+            ->update($request->only('title'));
+        $phone_updated = phone::find($id);
+        if($local == 1)
+            return $phone_updated;
 
         return response()->json([
             'statut' => 1,
-            'phone' => $offer_updated,
+            'data' => $phone_updated,
         ]);
     }
 

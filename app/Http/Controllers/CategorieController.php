@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\categorie;
 use App\Models\User;
 use App\Models\account_user;
-use Auth;
-use Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 class CategorieController extends Controller
 {
     public $account_user ;

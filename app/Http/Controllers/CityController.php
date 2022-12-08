@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use App\Models\city;
-use App\Models\User;
-use App\Models\account;
 use App\Models\region;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;

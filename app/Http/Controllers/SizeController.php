@@ -16,8 +16,23 @@ class SizeController extends Controller
 
     public function index(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'type_size_id'=>'required|exists:type_sizes,id',
+            'pagination' => 'required',
+            'order_by' => '',
+            'serach_by' => '',
+            'filter_by_columns' => ''
+        ]);
+        
+        if($validator->fails()){
+            return response()->json([
+                'Validation Errors' => $validator->errors()
+            ]);
+        }
         $account = User::find(Auth::user()->id)->accounts->first();
-        $sizes = account::find($account->id)->sizes()->paginate(20);
+        $sizes = account::find($account->id)->sizes()
+        ->where('type_size_id', $request->type_size_id)
+        ->paginate(20);
 
 
         return response()->json([
@@ -44,6 +59,12 @@ class SizeController extends Controller
             'statut' => 'required',
             'type_size_id'=>'required|exists:type_sizes,id'
         ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'Validation Errors' => $validator->errors()
+            ]);
+        }
         $account = User::find(Auth::user()->id)->accounts->first();
         $size = size::create($request->all());
     
@@ -100,7 +121,7 @@ class SizeController extends Controller
             'size' => $size_updated,
         ]);
     }
-<
+
 
     public function destroy($id)
     {

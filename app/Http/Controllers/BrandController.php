@@ -9,6 +9,7 @@ use App\Models\brand;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\BrandSourceController;
+use App\Http\Controllers\ImageController;
 
 class BrandController extends Controller
 {
@@ -45,9 +46,10 @@ class BrandController extends Controller
         return $brand;
     }
 
-    public function update_brand($id_brand, $new_data){
-        $brand = brand::find($id_brand)->update($new_data);
-        return true;
+    public function update_brand($brand_id, $new_data){
+        $brand = brand::find($brand_id)->update($new_data);
+        $brand_updated = brand::find($brand_id);
+        return $brand_updated;
         
     }
 
@@ -69,14 +71,14 @@ class BrandController extends Controller
         };
 
         $account = User::find(Auth::user()->id)->accounts->first();
-        $new_brand = $this->create_brand($account->id, $request->only('title','website','email','statut'));
+        $new_brand = $this->store_brand($account->id, $request->only('title','website','email','statut'));
         $brand_sources = BrandSourceController::update_brand_source( $new_brand->id, $account->id,$request->sources );
-        $brand_image = BrandSourceController::create_brand_image( $new_brand->id, $account->id,$request->image );
+        $brand_image = ImageController::store( new Request($request->only('image')), $local=1 ,$new_brand, 'Brand' );
         $brand = brand::with('images', 'sources')->find($new_brand->id);
 
         return response()->json([
-            'statut' => 'brand created successfuly',
-            'brand' => $brand,
+            'statut' => 1,
+            'data' => $brand,
         ]);
     }
 
@@ -110,7 +112,7 @@ class BrandController extends Controller
             'email' => 'required',
             'statut' => 'required',
             'sources.*' => 'exists:sources,id',
-            'images.*' => 'exists:images,id',
+            'image.*' => 'exists:images,id',
         ]);
         if($validator->fails()){
             return response()->json([
@@ -118,9 +120,10 @@ class BrandController extends Controller
             ]);       
         };
         $account = User::find(Auth::user()->id)->accounts->first();
-        $update_brand = $this->update_brand($id,$request->only('title', 'website', 'email', 'statut'));
+        $brand_updated = $this->update_brand($id,$request->only('title', 'website', 'email', 'statut'));
+
+        $brand_updated->image =  ImageController::update(new Request(['image'=>$request->image[0]]),'', $local=1,$brand_updated,$request->image,'Brand', $principal_image=1);
         $update_sources = BrandSourceController::update_brand_source( $id, $account->id,$request->sources );
-        $update_images = BrandSourceController::update_brand_imageable( $id,$request->images );
 
         $brands = brand::with('images', 'sources')->find($id);
 

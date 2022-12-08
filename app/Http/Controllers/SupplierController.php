@@ -1,82 +1,66 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\PhoneController;
+use App\Http\Controllers\AddressController;
 use Illuminate\Http\Request;
 use App\Models\supplier;
-use App\Models\adresse;
+use App\Models\address;
 use App\Models\account;
 use App\Models\phone_type;
 use App\Models\phone;
 use App\Models\city;
-use App\Models\account_user;
-use Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 class SupplierController extends Controller
 {
 
     public function index(Request $request)
     {
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        $suppliers = supplier::where('account_id', $account_user->account_id)
-            ->get();
-
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $suppliers = account::find($account->id)->suppliers;
+        foreach($suppliers as $supplier){
+            $supplier->addresses = supplier::find($supplier->id)->addresses;
+            $supplier->phones = supplier::find($supplier->id)->phones;
+        }
         return response()->json([
             'statut' => 1,
-            'suppliers '=>$suppliers,
+            'data' => $suppliers,
         ]);
     }
 
     public function create(Request $request)
     {
-        $cities = city::get();
-        $phone_types = phone_type::get();
-
-        return response()->json([
-            'statut' => 1,
-            'cities' => $cities,
-            'phone_types' => $phone_types,
-        ]);
+        //
     }
 
     public function store(Request $request)
     {
-        $account_user = account_user::where('user_id',Auth::user()->id)
-            ->first(['account_id','user_id']);
-        request()->validate([
+        $validator = Validator::make($request->all(),[
             'title' => 'required',
-            'adresse' => 'required',
+            'statut' => 'required',
+            'phone_type_id' => 'required',
             'phone' => 'required',
-            // 'account_id' => 'required',
-            'photo' => '',
-            'photo_dir' => '',
-            'statut' => '',
-            'user_id' => 'required',
-            'city_id' => 'required',
-            'phone_type_id' => 'required'
-
+            'account_city_id' => 'required',
+            'address' => 'required',
         ]);
-        $adresse = adresse::create([
-            'adresse' => $request['adresse'],
-            'city_id' => intval($request['city_id'])
-        ]);
-        $phone = phone::create([
-            'phone' => $request['phone'],
-            'phone_type_id' => intval($request['phone_type_id'])
-        ]);
-        $supplier = supplier::create([
-            'title' => $request['title'],
-            'phone_id' => $phone['id'],
-            'adresse_id' => $adresse['id'],
-            'account_id' => $account_user->account_id,
-            'photo' => $request['photo'],
-            'photo_dir' => $request['photo_dir'],
-            'statut' => intval($request['statut']),
-        ]);
-    
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error'=> $validator->errors()
+            ]);
+        };
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $account = account::find($account->id);
+        $supplier = $account->suppliers()->create($request->all());
+        $request_phone = new Request($request->only('phone', 'phone_type_id'));
+        $phone = PhoneController::store( $request_phone, $local=1, $supplier);
+        $request_address = new Request($request->only('address', 'account_city_id'));
+        $phone = AddressController::store( $request_address, $local=1, $supplier);
         return response()->json([
             'statut' => 1,
-            'supplier' => $supplier 
+            'data' => $phone 
         ]);
     }
 
@@ -106,34 +90,33 @@ class SupplierController extends Controller
         $this->validate($request,[
             'title' => 'required',
             'phone' => 'required',
-            'adresse' => 'required',
+            'address' => 'required',
             'photo' => 'required',
             'photo_dir' => 'required',
             'statut' => 'required',
         ]);
         $supplier = supplier::find($id);
         $phone = phone::find($supplier['phone_id']);
-        $adresse = adresse::find($supplier['adresse_id']);
+        $address = address::find($supplier['address_id']);
 
         $supplier->title = $request->input('title');
         $phone->phone = $request->input('phone');
-        $adresse->adresse = $request->input('adresse');
+        $address->address = $request->input('address');
         $supplier->photo = $request->input('photo');
         $supplier->photo_dir = $request->input('photo_dir');
         $supplier->statut = $request->input('statut');
         $supplier->save();
         $phone->save();
-        $adresse->save();
+        $address->save();
 
         return response()->json([
             'statut' => 1,
             'phone' => $phone,
-            'adresse' => $adresse,
+            'address' => $address,
             'supplier' => $supplier,
 
         ]);
     }
-
 
     public function destroy($id)
     {

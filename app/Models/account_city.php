@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class accounts_city extends Model
+class account_city extends Model
 {
     use HasFactory;
     protected $table = 'account_city' ;
@@ -41,6 +41,9 @@ class accounts_city extends Model
         return $this->hasMany(order::class);
     }
 
+    public function has_addresses(){
+        return $this->hasMany(address::class);
+    }
     public function account_user_order(){
         return $this->belongsToMany(account_user::class, 'orders');
     }

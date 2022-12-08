@@ -20,12 +20,19 @@ class account extends Model
 
     public function cities()
     {
-        return $this->belongsToMany(city::class);
+        return $this->belongsToMany(city::class, 'account_city')
+        ->withPivot('id');
     }
 
     public function carriers()
     {
         return $this->belongsToMany(carrier::class, 'account_carrier');
+        
+    }
+
+    public function has_carriers()
+    {
+        return $this->hasMany(carrier::class);
         
     }
 
@@ -56,7 +63,7 @@ class account extends Model
 
     public function addresses()
     {
-        return $this->morphToMany(addresse::class, 'addressable');
+        return $this->morphToMany(address::class, 'addressable');
     }
 
     // hasMany
@@ -80,7 +87,7 @@ class account extends Model
     
     public function account_product()
     {
-        return $this->hasMany(account_carrier::class);
+        return $this->hasMany(account_product::class);
         
     }
     public function account_city()
@@ -100,7 +107,10 @@ class account extends Model
     {
         return $this->hasMany(type_size::class);
     }
-
+    public function sizes()
+    {
+        return $this->hasMany(size::class);
+    }
     public function depots()
     {
         return $this->hasMany(depot::class);
@@ -134,5 +144,13 @@ class account extends Model
     public function has_images()
     {
         return $this->hasMany(image::class);
+    }
+    public function has_phones()
+    {
+        return $this->hasMany(phone::class);
+    }
+    public function has_addresses()
+    {
+        return $this->hasMany(address::class);
     }
 }

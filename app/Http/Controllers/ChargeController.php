@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\charge;
 use App\Models\charge_type;
 use App\Models\payment_commission;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ChargeController extends Controller
 {

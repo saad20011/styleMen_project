@@ -19,7 +19,7 @@ class CarrierController extends Controller
 
         return response()->json([
             'statut' => 1,
-            'carriers'=>$carriers,
+            'data' => $carriers,
         ]);
     }
 
@@ -45,8 +45,8 @@ class CarrierController extends Controller
         };
         $account = User::find(Auth::user()->id)->accounts->first();
         $carrier_acc = collect($request->all())->put('account_id', $account->id);
-        $carrier = account::find($account->id)->carriers()->create($carrier_acc->all());
-        $account->carriers()->attach([1=>[
+        $carrier = account::find($account->id)->has_carriers()->create($request->all());
+        $account->carriers()->attach([$carrier->id=>[
             'autocode'=> 1,
             'statut'=>1
         ]]);
@@ -88,11 +88,11 @@ class CarrierController extends Controller
         }
         $account = User::find(Auth::user()->id)->accounts->first();
         $carrier = carrier::find($id)
-            ->where('account_id', $account->id)
+            ->where(['id' => $id, 'account_id' =>$account->id])
             ->update($request->all());
         $carrier_updated = carrier::find($id);
         return response()->json([
-            'statut' => $carrier,
+            'statut' => 1,
             'carrier' => $carrier_updated,
         ]);
     }

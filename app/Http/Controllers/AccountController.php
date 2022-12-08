@@ -3,43 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\account;
-use App\Models\User;
-use App\Models\account_user;
 use Illuminate\Http\Request;
-use Validator;
-use Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 class AccountController extends Controller
 {
 
     public function index(Request $request)
     {
-<<<<<<< HEAD
-        // return response()->json([
-        //     // 'statut' => 1,
-        //     // 'account_user' => $account_user,
-        //     // 'user' => $user->accounts,
-        //     'phone' => $account->phones,
 
-        // ]);
-=======
-        $accounts = account::get();
-        //test
-        $account = account::find(1);
-        $account->images()->create([
-            'title'=> 1,
-            'photo'=>4,
-            'photo_dir'=>'0612121212',
-        ]);
-        $account_user = account_user::find(1)->user;
-        $user = User::find(Auth::user()->id);
+        $accounts = account::with('users')->get();
+
         return response()->json([
-            // 'statut' => 1,
-            // 'account_user' => $account_user,
-            // 'user' => $user->accounts,
-            'phone' => $account->phones,
-
+            'statut' => 1,
+            'accounts' => $accounts,
         ]);
->>>>>>> 6fde9e342c7969b11858b0bc43c29137411372b2
     }
 
     public function create(Request $request)
@@ -85,7 +63,8 @@ class AccountController extends Controller
             'statut' => 1,
             'account' => $accounts,
 
-        ]);    }
+        ]);
+        }
 
 
     public function update(Request $request, $id)

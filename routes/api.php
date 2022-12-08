@@ -15,7 +15,7 @@ use App\Http\Controllers\SizeController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PhoneTypeController;
-use App\Http\Controllers\AdresseController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CarrierController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PaymentTypeController;
@@ -63,7 +63,7 @@ Route::middleware('auth:api')->group( function () {
     Route::put('/cities', [CityController::class, 'update_all_cities']);
     Route::resource('size', SizeController::class);
     Route::resource('phone_type', PhoneTypeController::class);
-    Route::resource('adresse', AdresseController::class);
+    Route::resource('address', AddressController::class);
     Route::resource('carrier', CarrierController::class);
     Route::resource('supplier', SupplierController::class);
     Route::resource('payment_type', PaymentTypeController::class);

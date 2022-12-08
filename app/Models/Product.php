@@ -55,14 +55,17 @@ class Product extends Model
 
     public function images()
     {
-        return $this->morphToMany(image::class, 'imageable');
-            // ->wherePivot('statut', 1)
-            // ->withPivot('statut');
+        return $this->morphToMany(image::class, 'imageable')
+            ->wherePivotIn('statut', [1,2])
+            ->withPivot('statut');
     }
-    
-    // public function imageables()
-    // {
+    public function has_images()
+    {
+        return $this->hasMany(image::class);
+    }
+    public function imageables()
+    {
 
-    //     return $this->hasMany(imageable::class, 'imageable_id', 'id');
-    // }
+        return $this->hasMany(imageable::class, 'imageable_id', 'id');
+    }
 }

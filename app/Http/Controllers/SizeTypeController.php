@@ -18,8 +18,9 @@ class SizeTypeController extends Controller
         
         $account = User::find(Auth::user()->id)->accounts->first();
 
-        $type_sizes = account::with('type_sizes')->find($account->id);
-
+        $type_sizes = account::with('type_sizes')
+            ->where('id',$account->id);
+            -get();
         return response()->json([
             'statut' => 1,
             'data' => $type_sizes,
