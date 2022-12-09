@@ -99,15 +99,6 @@ class SupplierController extends Controller
         $phone = phone::find($supplier['phone_id']);
         $address = address::find($supplier['address_id']);
 
-        $supplier->title = $request->input('title');
-        $phone->phone = $request->input('phone');
-        $address->address = $request->input('address');
-        $supplier->photo = $request->input('photo');
-        $supplier->photo_dir = $request->input('photo_dir');
-        $supplier->statut = $request->input('statut');
-        $supplier->save();
-        $phone->save();
-        $address->save();
 
         return response()->json([
             'statut' => 1,

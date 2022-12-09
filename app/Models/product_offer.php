@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class products_offer extends Model
+class product_offer extends Model
 {
     use HasFactory;
     protected $fillable = [
         'product_id',
         'offer_id',
     ];
-
+    protected $table = 'product_offer';
+    
     public function account_product(){
         return $this->belongsTo(account_product::class);
     }

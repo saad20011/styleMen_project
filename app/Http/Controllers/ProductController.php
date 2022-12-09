@@ -9,6 +9,7 @@ use App\Models\account_user;
 use App\Models\account_product;
 use App\Models\account;
 use App\Models\product_size;
+use App\Models\product_offer;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -172,6 +173,8 @@ class ProductController extends Controller
             'principal_image' => 'required|array|between:1,1',
             'principal_image' => 'required|exists:images,id',
             'images.*' => 'required|exists:images,id',
+            'sizes.*' => 'required|exists:sizes,id',
+            'offers.*' => 'required|exists:offers,id',
         ]);
         if($validator->fails()){
             return response()->json([
@@ -181,14 +184,23 @@ class ProductController extends Controller
 
         $account_user = User::find(Auth::user()->id)->account_user->first();
         $product = product::where(['id'=>$id, 'account_user_id'=> $account_user->id])->first();
+        $account_product = account_product::where(['account_id'=>$account_user->account_id, 'product_id'=> $product->id])->first();
         if(!$product)
             return response()->json([
                 'statut' => 0,
                 'data' => 'not found',
             ]);
+        // update les infos du produits 
         $product->update($request->all());
-        $product->principal_image =  ImageController::update(new Request(['image'=>$request->principal_image[0]]),'', $local=1,$product,$request->principal_image, 'Product', $principal_image=1);
 
+        //update sizes du produit
+        $product_sizes = $this->update_product_sizes($product->id, $account_user->account_id, $request->sizes);
+
+        //update offres du produit
+        $product_offers = $this->update_product_offers($account_product->id, $request->offers);
+
+        // update les images du produits 
+        $product->principal_image =  ImageController::update(new Request(['image'=>$request->principal_image[0]]),'', $local=1,$product,$request->principal_image, 'Product', $principal_image=1);
         if(count($request->images)>0){
             foreach($request->images as $image){
                 ImageController::update(new Request(['image'=>$image]),'', $local=1,$product,$request->images, 'Product');
@@ -217,5 +229,58 @@ class ProductController extends Controller
     public function store_product_suppliers($supplier_id, $suppliers){
         $product_size = product::find($supplier_id)
                 ->suppliers()->attach($suppliers);
+    }
+
+    public static function update_product_sizes($product_id, $account_id, $sizes)
+    {
+        // change sizes
+        $product = product::find($product_id);
+        $product_sizes = product::find($product_id)->product_size;
+
+        foreach($product_sizes as $product_size){
+            if(in_array($product_size->size_id, $sizes) == true){
+                if( $product_size->statut==0){
+                    product_size::where('id',$product_size->id)->update(['statut'=>1]);
+                }
+            
+            }else{ 
+                product_size::where('id',$product_size->id)->update(['statut'=>0]);
+            }
+        }
+        foreach($sizes as $size){
+            $exist = collect($product_sizes)->contains('size_id',$size);
+            if($exist == false ){
+                $product->sizes()->attach($size);
+                $depots = account::find($account_id)->depots('id')->pluck('id')->all();
+                product_size::where(['size_id' => $size, 'product_id' => $product_id])->first()
+                    ->depots()->attach($depots);
+            }
+        }
+        return true;
+}
+    public static function update_product_offers($account_product_id, $offers)
+    {
+        // change sizes
+        $account_product = account_product::find($account_product_id);
+        $product_offers = account_product::find($account_product_id)->product_offer;
+
+        foreach($product_offers as $product_offer){
+            if(in_array($product_offer->offer_id, $offers) == true){
+                if( $product_offer->statut==0){
+                    product_offer::where('id',$product_offer->id)->update(['status'=>1]);
+                }
+            
+            }else{ 
+                product_offer::where('id',$product_offer->id)->update(['status'=>0]);
+            }
+        }
+        foreach($offers as $offer){
+            $exist = collect($product_offers)->contains('offer_id',$offer);
+            if($exist == false ){
+                $account_product->offers()->attach($offer);
+
+            }
+        }
+        return true;
     }
 }

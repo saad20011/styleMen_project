@@ -72,7 +72,7 @@ class BrandController extends Controller
 
         $account = User::find(Auth::user()->id)->accounts->first();
         $new_brand = $this->store_brand($account->id, $request->only('title','website','email','statut'));
-        $brand_sources = BrandSourceController::update_brand_source( $new_brand->id, $account->id,$request->sources );
+        $brand_sources = BrandSourceController::update_brand_sources( $new_brand->id, $account->id,$request->sources );
         $brand_image = ImageController::store( new Request($request->only('image')), $local=1 ,$new_brand, 'Brand' );
         $brand = brand::with('images', 'sources')->find($new_brand->id);
 
@@ -123,7 +123,7 @@ class BrandController extends Controller
         $brand_updated = $this->update_brand($id,$request->only('title', 'website', 'email', 'statut'));
 
         $brand_updated->image =  ImageController::update(new Request(['image'=>$request->image[0]]),'', $local=1,$brand_updated,$request->image,'Brand', $principal_image=1);
-        $update_sources = BrandSourceController::update_brand_source( $id, $account->id,$request->sources );
+        $update_sources = BrandSourceController::update_brand_sources( $id, $account->id,$request->sources );
 
         $brands = brand::with('images', 'sources')->find($id);
 

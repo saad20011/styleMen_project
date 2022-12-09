@@ -19,7 +19,7 @@ class account_city extends Model
     	'updated_at'	
     ];
     public function cities(){
-        return $this->belongsTo(city::class);
+        return $this->belongsTo(city::class, 'city_id', 'id');
     }
 
     public function accounts(){

@@ -22,7 +22,7 @@ use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ChargeTypeController;
 use App\Http\Controllers\ChargeController;
-use App\Http\Controllers\Accounts_CarriersCities;
+use App\Http\Controllers\AccountCarrierCity;
 use App\Http\Controllers\SizeTypeController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\SourceController;
@@ -59,8 +59,6 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('phone', PhoneController::class);
     Route::resource('region', RegionController::class);
     Route::resource('city', CityController::class);
-    Route::get('/cities', [CityController::class, 'edit_all_cities']);
-    Route::put('/cities', [CityController::class, 'update_all_cities']);
     Route::resource('size', SizeController::class);
     Route::resource('phone_type', PhoneTypeController::class);
     Route::resource('address', AddressController::class);
@@ -70,8 +68,8 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('payment_method', PaymentMethodController::class);
     Route::resource('charge_type', ChargeTypeController::class);
     Route::resource('charge', ChargeController::class);
-    Route::resource('carrier_city', Accounts_CarriersCities::class);
-    Route::put('/carrier_cities', [Accounts_CarriersCities::class, 'update_all_carrier_cities']);
+    Route::resource('carrier_city', AccountCarrierCity::class);
+    Route::put('/carrier_cities', [AccountCarrierCity::class, 'update_carrier_cities']);
     Route::resource('type_size', SizeTypeController::class);
     Route::resource('brand', BrandController::class);
     Route::resource('source', SourceController::class);

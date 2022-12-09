@@ -18,7 +18,7 @@ class SizeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'type_size_id'=>'required|exists:type_sizes,id',
-            'pagination' => 'required',
+            // 'pagination' => 'required',
             'order_by' => '',
             'serach_by' => '',
             'filter_by_columns' => ''
@@ -55,7 +55,7 @@ class SizeController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|unique:size',
+            'title' => 'required|unique:sizes',
             'statut' => 'required',
             'type_size_id'=>'required|exists:type_sizes,id'
         ]);
@@ -66,7 +66,7 @@ class SizeController extends Controller
             ]);
         }
         $account = User::find(Auth::user()->id)->accounts->first();
-        $size = size::create($request->all());
+        $size = account::find($account->id)->sizes()->create($request->all());
     
         return response()->json([
             'statut' => 1,

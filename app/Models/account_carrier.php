@@ -23,13 +23,13 @@ class account_carrier extends Model
         return $this->belongsTo(account::class);
     }
 
-    public function account_cities()
+    public function account_city()
     {
         return $this->belongsToMany(account_city::class, 'account_carrier_city');
         
     }
 
-    public function account_carrier_account_city()
+    public function account_carrier_city()
     {
         return $this->hasMany(account_carrier_city::class);
         
