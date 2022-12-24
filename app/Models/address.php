@@ -9,7 +9,7 @@ class address extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'address','account_city_id'
+        'title','account_city_id'
     ] ;
     
     public function accounts()

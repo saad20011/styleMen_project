@@ -39,7 +39,7 @@ class PhoneController extends Controller
         if($local == 0){
             $validator = Validator::make($request->all(), [
                 'phone' => 'required',
-                'phone_type_id' => 'required',
+                'phone_type_id' => 'exists:phone_types,id,account_id,'.$account->id,
             ]);
 
             if($validator->fails()){

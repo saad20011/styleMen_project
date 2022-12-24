@@ -47,10 +47,13 @@ class AddressController extends Controller
 
     public static function store(Request $request, $local=0, $table=null)
     {
+        $account = User::find(Auth::user()->id)->accounts->first();
         if($local == 0){
             $validator = Validator::make($request->all(), [
-                'address' => 'required',
+                'title' => 'required',
                 'account_city_id' => 'required',
+                'account_city_id' => 'exists:account_city,id,account_id,'.$account->id,
+
             ]);
 
             if($validator->fails()){
@@ -60,12 +63,8 @@ class AddressController extends Controller
             };
         }
 
-        $account = User::find(Auth::user()->id)->accounts->first();
         $account_city = account_city::find($request->account_city_id);
-        $address = $account_city->has_addresses()->create([
-            'address' => $request->address,
-            'account_city_id' => $request->account_city_id
-        ]);
+        $address = $account_city->has_addresses()->create($request->all());
         if($local ==1 )
             $table->addresses()->attach($address->id);
             return $address;

@@ -92,11 +92,11 @@ class PhoneTypeController extends Controller
 
     public function destroy($id)
     {
-        $phone_type_b =  phone_type::find($id);
-        $phone_type = phone_type::find($id)->delete();
-        return response()->json([
-            'statut' => 'deleted successfuly',
-            'phone_type' => $phone_type_b,
-        ]);
+        // $phone_type_b =  phone_type::find($id);
+        // $phone_type = phone_type::find($id)->delete();
+        // return response()->json([
+        //     'statut' => 'deleted successfuly',
+        //     'phone_type' => $phone_type_b,
+        // ]);
     }
 }
