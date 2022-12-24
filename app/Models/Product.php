@@ -59,6 +59,12 @@ class Product extends Model
             ->wherePivotIn('statut', [1,2])
             ->withPivot('statut');
     }
+    public function principal_images()
+    {
+        return $this->morphToMany(image::class, 'imageable')
+            ->wherePivotIn('statut', [2])
+            ->withPivot('statut');
+    }
     public function has_images()
     {
         return $this->hasMany(image::class);

@@ -15,14 +15,17 @@ return new class extends Migration
     {
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->double('price',8,2);
-            $table->double('shipping_price',8,2);
-            $table->integer('statut')->length(11)->default(1);
-            $table->foreignId('account_id')->constrained();
-            $table->foreignId('brand_id')->constrained();
+            $table->string('title')->nullable();
+            $table->bigInteger('offer_id')->unsigned()->nullable();
+            $table->foreign('offer_id')->references('id')->on('offers');
+            $table->double('price',8,2)->nullable();
+            $table->double('shipping_price',8,2)->nullable();
+            $table->integer('statut')->length(11)->default(1)->nullable();
+            $table->foreignId('account_id')->nullable()->constrained();
+            $table->foreignId('brand_id')->nullable()->constrained();
             $table->timestamps();
         });
+
     }
 
     /**

@@ -8,10 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class supplier_receipt extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'code',
+        'supplier_id',
+        'account_user_id',
+        'status'
+    ];
+    
     public function suppliers(){
 
-        return $this->belongsTo(supplier::class);
+        return $this->belongsTo(supplier::class, 'supplier_id', 'id');
     }
 
     public function account_users(){

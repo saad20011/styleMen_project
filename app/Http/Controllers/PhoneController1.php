@@ -83,11 +83,13 @@ class PhoneController extends Controller
     }
 
 
-    public static function update(Request $request, $local = 0, $id)
+    public static function update(Request $request, $id, $local = 0)
     {
-        if($local = 0){
+        $account = User::find(Auth::user()->id)->accounts->first();
+        if($local == 0){
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
+                'phone_type_id' => 'exists:phone_types,id,account_id,'.$account->id,
             ]);
 
             if($validator->fails()){
@@ -97,10 +99,7 @@ class PhoneController extends Controller
             };
         }
 
-        $account = User::find(Auth::user()->id)->accounts->first();
-        $phone = phone::find($id)
-            ->where(['id'=>$id, 'account_id'=> $account->id])
-            ->update($request->only('title'));
+        $phone = phone::find($id)->update($request->all());
         $phone_updated = phone::find($id);
         if($local == 1)
             return $phone_updated;

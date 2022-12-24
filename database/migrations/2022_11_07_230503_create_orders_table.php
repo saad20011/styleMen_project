@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('code',100)->nullable(); //
             $table->foreignId('customer_id')->constrained(); // aprés la creation customer
-            $table->foreignId('account_user_id')->constrained('account_user')->nullable();
+            $table->foreignId('account_user_id')->nullable()->constrained('account_user');
             $table->foreignId('account_city_id')->constrained('account_city');
             $table->foreignId('payment_type_id')->constrained(); //new
             $table->foreignId('payment_method_id')->constrained();

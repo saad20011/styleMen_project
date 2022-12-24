@@ -108,12 +108,13 @@ class AddressController extends Controller
     }
 
 
-    public function update(Request $request, $id, $local = 0)
+    public static function update(Request $request, $id,$local = 0)
     {
+        $account = User::find(Auth::user()->id)->accounts->first();
         if($local == 0){
             $validator = Validator::make($request->all(), [
-                'address' => 'required',
-                'account_city_id' => 'required',
+                'title' => 'required',
+                'account_city_id'=>'required|exists:account_city,id,account_id,'.$account->id,
             ]);
 
             if($validator->fails()){
@@ -123,23 +124,7 @@ class AddressController extends Controller
             };
         }
 
-        $account = User::find(Auth::user()->id)->accounts->first();
         $address = address::find($id);
-        if(!$address){
-            return response()->json([
-                'statut' => 1,
-                'data' => 'not found'
-            ]);
-        }
-        $account_city = account_city::find($address->account_city_id);
-        $account_city_request = account_city::find($request->account_city_id);
-        if($account_city->account_id != $account->id or $account_city_request->account_id != $account->id){
-            return response()->json([
-                'statut' => 1,
-                'data' => 'not found'
-            ]);
-        }
-
         $address->update($request->only('address', 'account_city_id'));
         $address_updated = address::find($id);
         if($local == 1)
@@ -162,5 +147,6 @@ class AddressController extends Controller
         ]);
     }
 }
+
 
 

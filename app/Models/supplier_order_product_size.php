@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class supplier_order_product_size extends Model
 {
     use HasFactory;
+    protected $table = 'supplier_order_product_size';
     protected $fillable = [
         'supplier_order_id',
+        'supplier_receipt_id',
         'product_size_id',
         'receipt_id',
         'quantity',
@@ -19,14 +21,14 @@ class supplier_order_product_size extends Model
     ];
 
     public function supplier_orders(){
-        $this->belongsTo(supplier_order::class);
+        return $this->belongsTo(supplier_order::class);
     }
 
     public function supplier_receipts(){
-        $this->belongsTo(supplier_receipt::class);
+        return $this->belongsTo(supplier_receipt::class);
     }
 
     public function product_sizes(){
-        $this->belongsTo(product_size::class);
+        return $this->belongsTo(product_size::class, 'product_size_id', 'id');
     }
 }

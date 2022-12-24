@@ -33,4 +33,8 @@ class account_product extends Model
     {
         return $this->hasMany(product_offer::class);
     }
+    public function products()
+    {
+        return $this->belongsTo(product::class);
+    }
 }

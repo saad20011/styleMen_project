@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('supplier_order_id')->constrained();
             $table->foreignId('product_size_id')->constrained('product_size');
-            $table->foreignId('supplier_receipt_id')->constrained()->nullable();
+            $table->foreignId('supplier_receipt_id')->nullable()->constrained();
             $table->integer('quantity')->length(11)->default(0);
             $table->integer('price')->length(11)->default(0);
             $table->foreignId('user_id')->constrained();
-            $table->integer('status')->length(11);
+            $table->integer('status')->length(11)->default(1);
             $table->timestamps();
         });
     }

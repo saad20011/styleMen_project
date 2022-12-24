@@ -10,11 +10,7 @@ class supplier extends Model
     use HasFactory;
     protected $fillable = [
         'title',
-        'phone_id',
-        'adresse_id',
         'account_id',
-        'photo',
-        'photo_dir',
         'statut',
     ];
 
@@ -53,7 +49,7 @@ class supplier extends Model
     }
     public function products()
     {
-        return $this->belongsToMany(products::class, 'product_supplier');
+        return $this->belongsToMany(product::class, 'product_supplier');
         
     }
 

@@ -85,7 +85,7 @@ class account_user extends Model
 
     public function supplier_orders()
     {
-        return $this->hasMany(supplier_order::class);
+        return $this->hasMany(supplier_order::class, 'account_user_id', 'id');
         
     }
     public function suppliers_supplier_order()

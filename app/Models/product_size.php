@@ -18,7 +18,7 @@ class product_size extends Model
 
     public function products()
     {
-        return $this->belongsTo(product::class);
+        return $this->belongsTo(product::class, 'product_id', 'id');
     }
     
     public function sizes()
@@ -26,7 +26,7 @@ class product_size extends Model
         return $this->belongsTo(size::class);
     }
 
-    public function supplier_order_product_sizes()
+    public function supplier_order_product_size()
     {
         return $this->hasMany(supplier_order_product_size::class);
         
@@ -62,6 +62,8 @@ class product_size extends Model
     public function order_products(){
         return $this->hasMany(order_product::class);
     }
+    
+
 
     public function order_order_product(){
         return $this->belongsToMany(order::class, 'order_products');

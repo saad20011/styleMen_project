@@ -42,7 +42,7 @@ class account extends Model
     }
     public function products()
     {
-        return $this->belongsToMany(product::class);
+        return $this->belongsToMany(product::class, 'account_product');
     }
 
     public function brand_offers()
@@ -82,7 +82,7 @@ class account extends Model
 
     public function account_user()
     {
-        return $this->hasMany(account_user::class);
+        return $this->hasMany(account_user::class, 'account_id', 'id');
     }  
     
     public function account_product()

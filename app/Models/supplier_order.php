@@ -9,23 +9,22 @@ class supplier_order extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'reference',
+        'code',
         'shipping_date',
         'supplier_id',
-        'account_id',
-        'user_id',
+        'account_user_id',
         'status'
     ];
 
     public function suppliers()
     {
-        return $this->belongsTo(supplier::class);
+        return $this->belongsTo(supplier::class, 'supplier_id', 'id');
         
     }
 
-    public function supplier_order_product_sizes()
+    public function supplier_order_product_size()
     {
-        return $this->hasMany(supplier_order_product_size::class);
+        return $this->hasMany(supplier_order_product_size::class, 'supplier_order_id', 'id');
         
     }
 

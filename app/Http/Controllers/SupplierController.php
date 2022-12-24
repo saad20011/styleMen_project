@@ -87,24 +87,33 @@ class SupplierController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
-            'title' => 'required',
-            'phone' => 'required',
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $validator = Validator::make(collect($request->all())->put('id',$id)->all(), [
+            'title' => '',
+            'phone' => '',
+            'phone_id' => 'required',
             'address' => 'required',
-            'photo' => 'required',
-            'photo_dir' => 'required',
-            'statut' => 'required',
+            'address_id' => 'required',
+            'statut' => '',
+            'id'=>'exists:suppliers,id,account_id,'.$account->id,
         ]);
-        $supplier = supplier::find($id);
-        $phone = phone::find($supplier['phone_id']);
-        $address = address::find($supplier['address_id']);
+
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        }
+
+        $account = account::find($account->id);
+        $supplier = supplier::find($id)->update($request->all());
+        $supplier_up = supplier::find($id);
+        $supplier_up->phone = PhoneController::update(new Request($request->only('phone', 'phone_id')), $request->phone_id, $local=1);
+        $supplier_up->address = AddressController::update(new Request($request->only('address', 'address_id')), $request->address_id, $local=1);
 
 
         return response()->json([
             'statut' => 1,
-            'phone' => $phone,
-            'address' => $address,
-            'supplier' => $supplier,
+            'data' => $supplier_up
 
         ]);
     }
