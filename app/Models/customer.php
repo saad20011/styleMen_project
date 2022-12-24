@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class customer extends Model
 {
     use HasFactory;
-
+    protected $fillable=['name','comment','facebook','note','account_id'];
     public function phones()
     {
         return $this->morphToMany(phone::class, 'phoneable');
@@ -20,7 +20,7 @@ class customer extends Model
 
     public function addresses()
     {
-        return $this->morphToMany(addresse::class, 'addressable');
+        return $this->morphToMany(address::class, 'addressable');
     }
 
     // belongsTo

@@ -108,8 +108,9 @@ class AddressController extends Controller
     }
 
 
-    public function update(Request $request, $id, $local = 0)
+    public static function update(Request $request, $id, $local = 0)
     {
+        //si la mise a jour est locale
         if($local == 0){
             $validator = Validator::make($request->all(), [
                 'address' => 'required',
@@ -122,8 +123,7 @@ class AddressController extends Controller
                 ]);       
             };
         }
-
-        $account = User::find(Auth::user()->id)->accounts->first();
+        //verifier si l'adresse est disponible
         $address = address::find($id);
         if(!$address){
             return response()->json([
@@ -131,35 +131,47 @@ class AddressController extends Controller
                 'data' => 'not found'
             ]);
         }
-        $account_city = account_city::find($address->account_city_id);
+        //recuperer l'account pour comparer l'id du account avec l'account_id du account_city
+        $account = User::find(Auth::user()->id)->accounts->first();
+        //recuper l'account_city du account_city recu dans la request
         $account_city_request = account_city::find($request->account_city_id);
-        if($account_city->account_id != $account->id or $account_city_request->account_id != $account->id){
+        if($account_city_request->account_id != $account->id){
             return response()->json([
                 'statut' => 1,
                 'data' => 'not found'
             ]);
         }
+        //mis a jour de l'adresse
+        $address=address::find($id);
+        $updated=$address->update(['address' =>  $request->input('address'),'account_city_id' =>  $request->input('account_city_id')]);
+        if($updated){
+            //recuperation de l'adresse pour l'envoi
+            $address=address::find($id);
+            if($local == 1)
+                return $address;
 
-        $address->update($request->only('address', 'account_city_id'));
-        $address_updated = address::find($id);
-        if($local == 1)
-            return $address_updated;
-
+            return response()->json([
+                'statut' => 1,
+                'data' => $address,
+            ]);
+        }
+        
         return response()->json([
-            'statut' => 1,
-            'data' => $address_updated,
+            'statut' => 0,
+            'data' => 'update address error',
         ]);
     }
 
 
     public function destroy($id)
     {
-        $address_b =  address::find($id);
+        //l'adresse makhassoch yqder ymssa7ha walakine yqder y modifiehha bach tbqa 3endna dima une adresse nkhadmo biha
+        /*$address_b =  address::find($id);
         $address = address::find($id)->delete();
         return response()->json([
             'statut' => 1,
             'address' => $address_b,
-        ]);
+        ]);*/
     }
 }
 

@@ -85,41 +85,47 @@ class PhoneController extends Controller
 
     public static function update(Request $request, $local = 0, $id)
     {
-        if($local = 0){
+        //si la mise a jour est locale
+        if($local == 0){
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
+                'phone_type_id' => 'required',
             ]);
-
             if($validator->fails()){
                 return response()->json([
                     'Validation Error', $validator->errors()
                 ]);       
             };
         }
+        //recuperation de telephone pour l'envoi
+        $phone=phone::find($id);
+        //mis a jour de telephone
+        $updated=$phone->update(['title' =>  $request->input('title')]);
+        if($updated){
+            if($local == 1)
+                return $phone;
 
-        $account = User::find(Auth::user()->id)->accounts->first();
-        $phone = phone::find($id)
-            ->where(['id'=>$id, 'account_id'=> $account->id])
-            ->update($request->only('title'));
-        $phone_updated = phone::find($id);
-        if($local == 1)
-            return $phone_updated;
-
+            return response()->json([
+                'statut' => 1,
+                'data' => $phone,
+            ]);
+        }
         return response()->json([
-            'statut' => 1,
-            'data' => $phone_updated,
+            'statut'=>0,
+            'data'=>'update phone error'
         ]);
     }
 
 
     public function destroy($id)
     {
-        $phone_b =  phone::find($id);
+        //téléphone makhassnach nmass7oha 7ite ghadi ykhassna dima nemra de téléphone nkhadmo bih 
+        /*$phone_b =  phone::find($id);
         $phone = phone::find($id)->delete();
         return response()->json([
             'statut' => 1,
             'phone' => $phone_b,
-        ]);
+        ]);*/
     }
 }
 

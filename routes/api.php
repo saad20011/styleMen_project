@@ -29,6 +29,7 @@ use App\Http\Controllers\SourceController;
 use App\Http\Controllers\DeliveryMenController;
 use App\Http\Controllers\SupplierOrderController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\CustomerController;
 
 
 /*
@@ -72,12 +73,11 @@ Route::middleware('auth:api')->group( function () {
     Route::put('/carrier_cities', [AccountCarrierCity::class, 'update_carrier_cities']);
     Route::resource('type_size', SizeTypeController::class);
     Route::resource('brand', BrandController::class);
+    Route::resource('customer', CustomerController::class);
     Route::resource('source', SourceController::class);
     Route::resource('brand_source', SourceController::class);
     Route::resource('delivery_men', DeliveryMenController::class);
     Route::resource('supplier_order', SupplierOrderController::class);
     Route::resource('offer', OfferController::class);
-
-
     // Route::resource('products', ProductController::class);
 });
