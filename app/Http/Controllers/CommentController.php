@@ -75,6 +75,7 @@ class CommentController extends Controller
 
     public function update(Request $request, $id)
     {
+        $account = User::find(Auth::user()->id)->accounts->first();
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'statut' => 'required',
@@ -86,20 +87,11 @@ class CommentController extends Controller
                 'Validation Error', $validator->errors()
             ]);       
         };
-        $comment = comment::find($id);
-        $account = User::find(Auth::user()->id)->accounts->first();
-        if($account->id==$comment->account_id){
-            $updated=$comment->update($request->all());
-            if($updated){
-                return response()->json([
-                    'statut' => 1,
-                    'data' => $comment,
-                ]);
-            }
-        }
+        $comment = comment::find($id)->update($request->all());
+        $comment=comment::find($id);
         return response()->json([
-            'statut' => 0,
-            'data' => 'error update comment',
+            'statut' => 1,
+            'data' => $comment,
         ]);
         
     }
