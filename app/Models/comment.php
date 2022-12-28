@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class comment extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'title',
+        'statut',
+        'current_statut',
+        'post_poned',
+        'account_id'
+    ];
     public function accounts()
     {
         return $this->belongsTo(account::class);

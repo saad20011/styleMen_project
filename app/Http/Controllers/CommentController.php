@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\comment;
+use App\Models\account;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
-
     public function index(Request $request)
     {
-        $phone_types = phone_type::get();
+        $comments = comment::get();
 
         return response()->json([
-            'you'=>$phone_types,
+            'statut'=>1,
+            'data'=>$comments,
         ]);
     }
 
@@ -23,17 +28,32 @@ class CommentController extends Controller
 
     public function store(Request $request)
     {
-        request()->validate([
+
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'statut' => 'required',
+            'current_statut' => 'required',
+            'post_poned' => 'required',
         ]);
-    
-        $phone_type = phone_type::create($request->all());
-    
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $request->merge(["account_id"=>$account->id]);
+        $created = comment::create($request->all());
+        if($created){
+            return response()->json([
+                'statut' => 1,
+                'data' => $created,
+            ]);
+        }
         return response()->json([
-            'statut' => 'product created successfuly',
-            'product' => $phone_type,
+            'statut' => 0,
+            'data' => "add comment error",
         ]);
+        
     }
 
 
@@ -44,33 +64,53 @@ class CommentController extends Controller
 
     public function edit($id)
     {
-        //
+        $comment = comment::find($id);
+
+        return response()->json([
+            'statut' => 1,
+            'data' => $comment,
+        ]);
     }
 
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'statut' => 'required'
+            'statut' => 'required',
+            'current_statut' => 'required',
+            'post_poned' => 'required',
         ]);
-        $phone_type = phone_type::find($id);
-        $phone_type->title = $request->input('title');
-        $phone_type->statut = $request->input('statut');
-        $phone_type->save();
+        if($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);       
+        };
+        $comment = comment::find($id);
+        $account = User::find(Auth::user()->id)->accounts->first();
+        if($account->id==$comment->account_id){
+            $updated=$comment->update($request->all());
+            if($updated){
+                return response()->json([
+                    'statut' => 1,
+                    'data' => $comment,
+                ]);
+            }
+        }
         return response()->json([
-            'statut' => 'your phone type is updated successfuly',
-            'phone_type' => $phone_type,
+            'statut' => 0,
+            'data' => 'error update comment',
         ]);
+        
     }
 
 
     public function destroy($id)
     {
-        $phone_type = phone_type::where('id',$id)->delete();
+        $comment = comment::where('id',$id)->delete();
         return response()->json([
             'statut' => 'deleted successfuly',
-            'role' => $phone_type,
+            'data' => $comment,
         ]);
     }
 }
