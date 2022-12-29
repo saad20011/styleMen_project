@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class subcomment extends Model
 {
     use HasFactory;
-    
+    protected $fillable = [
+        'title',
+        'account_user_id',
+        'comment_id',
+        'order_change'
+    ];
     public function comments()
     {
         return $this->belongsTo(comment::class);
