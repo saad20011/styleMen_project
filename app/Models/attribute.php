@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class size extends Model
+class attribute extends Model
 {
     use HasFactory;
     protected $fillable = [
         'title' ,
         'statut', 
-        'account_id',
-        'user_id' ,
-        'photo' ,
-        'photo_dir',
-        'type_size_id' 
+        'account_user_id',
+        'types_attribute_id' 
     ];
 
     public function type_size()
@@ -23,9 +20,9 @@ class size extends Model
         return $this->belongsTo(customer::class);
     }
 
-    public function product_size()
+    public function product_variationAttribute()
     {
-        return $this->hasMany(product_size::class);
+        return $this->hasMany(product_variationAttribute::class);
         
     }
     public function products()

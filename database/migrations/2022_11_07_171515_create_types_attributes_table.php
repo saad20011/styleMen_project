@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_depot', function (Blueprint $table) {
+        Schema::create('types_attributes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_size_id')->constrained('product_size');
-            $table->foreignId('depot_id')->constrained();
-            $table->integer('quantity')->length(11)->default(0);
-            $table->string('status')->default(1);
+            $table->bigInteger('account_user_id')->unsigned()->nullable();
+            $table->foreign('account_user_id')->references('id')->on('account_user');
+            $table->string('title');
+            $table->string('description');
+            $table->integer('statut')->length(11)->default(1)->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_depot');
+        Schema::dropIfExists('sizes');
     }
 };

@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class product_size extends Model
+class product_variationAttribute extends Model
 {
-    protected $table = 'product_size';
+    protected $table = 'product_variationAttribute';
     use HasFactory;
     protected $fillable = [
         'product_id',
-        'size_id',
+        'attribute_id',
         'user_id',
         'account_id'
     ];
@@ -20,15 +20,15 @@ class product_size extends Model
     {
         return $this->belongsTo(product::class, 'product_id', 'id');
     }
-    
-    public function sizes()
+
+    public function variationAttributes()
     {
-        return $this->belongsTo(size::class);
+        return $this->belongsTo(variationAttribute::class, 'variationAttribute_id', 'id');
     }
 
-    public function supplier_order_product_size()
+    public function supplier_order_product_variationAttribute()
     {
-        return $this->hasMany(supplier_order_product_size::class);
+        return $this->hasMany(supplier_order_product_variationAttribute::class, 'product_variationAttribute_id', 'supplier_order_product_variationAttribute_id');
         
     }
     public function product_depot()
@@ -38,24 +38,24 @@ class product_size extends Model
     }
     public function depots()
     {
-        return $this->belongsToMany(depot::class, 'product_depot');
+        return $this->belongsToMany(depot::class, 'product_depot', 'product_variationAttribute_id', '', 'id');
         
     }
     public function product_orders()
     {
-        return $this->belongsToMany(product_order::class, 'supplier_order_product_size');
+        return $this->belongsToMany(product_order::class, 'supplier_order_product_attribute');
         
     }
 
     public function users()
     {
-        return $this->belongsToMany(user::class, 'supplier_order_product_size');
+        return $this->belongsToMany(user::class, 'supplier_order_product_attribute');
         
     }
 
     public function supplier_receipts()
     {
-        return $this->belongsToMany(supplier_receipt::class, 'supplier_order_product_size');
+        return $this->belongsToMany(supplier_receipt::class, 'supplier_order_product_attribute');
         
     }
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('offer_id')->constrained();
             $table->foreignId('account_product_id')->constrained('account_product');
-            $table->integer('status')->length(11)->default(1);
+            $table->integer('statut')->length(11)->default(1);
             $table->timestamps();
         });
     }

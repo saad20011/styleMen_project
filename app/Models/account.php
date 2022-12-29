@@ -13,8 +13,6 @@ class account extends Model
     protected $fillable = [
         'name',
         'statut',
-        'photo',
-        'photo_dir'
     ];
     // belongsToMany
 
@@ -103,14 +101,7 @@ class account extends Model
     {
         return $this->hasMany(customer::class);
     }
-    public function type_sizes()
-    {
-        return $this->hasMany(type_size::class);
-    }
-    public function sizes()
-    {
-        return $this->hasMany(size::class);
-    }
+
     public function depots()
     {
         return $this->hasMany(depot::class);

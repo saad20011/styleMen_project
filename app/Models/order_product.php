@@ -14,8 +14,8 @@ class order_product extends Model
     public function orders(){
         return $this->belongsTo(order::class);
     }
-    public function product_sizes(){
-        return $this->belongsTo(product_size::class);
+    public function product_variationAttributes(){
+        return $this->belongsTo(product_variationAttribute::class);
     }
     public function offers(){
         return $this->belongsTo(offer::class);

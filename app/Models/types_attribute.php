@@ -5,23 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class type_size extends Model
+class types_attribute extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
+        'title',
         'description',
-        'account_id',
-        'user_id'
+        'statut'
     ];
 
     public function accounts()
     {
-        return $this->belongsTo(account::class);
+        return $this->belongsTo(account_user::class);
     }
 
-    public function sizes()
+    public function attributes()
     {
-        return $this->hasMany(customer::class);
+        return $this->hasMany(attribute::class);
     }
 }

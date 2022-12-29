@@ -12,7 +12,7 @@ class supplier_receipt extends Model
         'code',
         'supplier_id',
         'account_user_id',
-        'status'
+        'statut'
     ];
     
     public function suppliers(){
@@ -25,27 +25,27 @@ class supplier_receipt extends Model
         return $this->belongsTo(account_user::class);
     }
 
-    public function supplier_order_product_sizes()
+    public function supplier_order_product_variationAttributes()
     {
-        return $this->hasMany(supplier_order_product_size::class);
+        return $this->hasMany(supplier_order_product_variationAttribute::class);
         
     }
 
-    public function product_sizes()
+    public function product_variationAttributes()
     {
-        return $this->belongsToMany(product_size::class, 'supplier_order_product_size');
+        return $this->belongsToMany(product_variationAttribute::class, 'supplier_order_product_variationAttribute');
         
     }
 
     public function users()
     {
-        return $this->belongsToMany(user::class, 'supplier_order_product_size');
+        return $this->belongsToMany(user::class, 'supplier_order_product_variationAttribute');
         
     }
 
     public function supplier_order()
     {
-        return $this->belongsToMany(supplier_order::class, 'supplier_order_product_size');
+        return $this->belongsToMany(supplier_order::class, 'supplier_order_product_variationAttribute');
         
     }
 

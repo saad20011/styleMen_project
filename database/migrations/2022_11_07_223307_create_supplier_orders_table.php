@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('shipping_date')->nullable();
             $table->foreignId('supplier_id')->constrained();
             $table->foreignId('account_user_id')->constrained('account_user');
-            $table->integer('status')->length(11)->default(1);
+            $table->integer('statut')->length(11)->default(1);
             // $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });

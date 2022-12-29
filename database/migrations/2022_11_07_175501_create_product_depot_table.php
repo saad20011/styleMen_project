@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_size', function (Blueprint $table) {
+        Schema::create('product_depot', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained();
-            $table->foreignId('size_id')->constrained();
-            // $table->integer('quantity')->default(0);
-            $table->integer('statut')->default(1);
+            $table->foreignId('product_variationAttribute_id')->constrained('product_variationAttribute');
+            $table->foreignId('depot_id')->constrained();
+            $table->integer('quantity')->length(11)->default(0);
+            $table->string('status')->default(1);
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_sizes');
+        Schema::dropIfExists('product_depot');
     }
 };

@@ -13,16 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sizes', function (Blueprint $table) {
+        Schema::create('product_variationAttribute', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->foreignId('product_id')->constrained();
+            $table->foreignId('variationAttribute_id')->constrained();
+            $table->bigInteger('account_user_id')->unsigned();
+            $table->foreign('account_user_id')->references('id')->on('account_user');
             $table->integer('statut')->default(1);
-            $table->foreignId('account_id')->constrained();
-            $table->foreignId('type_size_id')->constrained();
-            // $table->string('photo')->nullable();
-            // $table->string('photo_dir')->nullable();
             $table->timestamps();
-            // $table->foreignId('user_id')->constrained();
         });
     }
 
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sizes');
+        Schema::dropIfExists('product_variationAttributes');
     }
 };

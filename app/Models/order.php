@@ -50,8 +50,8 @@ class order extends Model
     public function account_user_order_product(){
         return $this->belongsToMany(account_user::class, 'order_products');
     }
-    public function product_size_order_product(){
-        return $this->belongsToMany(product_size::class, 'order_products');
+    public function product_variationAttribute_order_product(){
+        return $this->belongsToMany(product_variationAttribute::class, 'order_products');
     }
     public function offer_order_product(){
         return $this->belongsToMany(offer::class, 'order_products');

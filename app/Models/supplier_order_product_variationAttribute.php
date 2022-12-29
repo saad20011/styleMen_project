@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class supplier_order_product_size extends Model
+class supplier_order_product_variationAttribute extends Model
 {
     use HasFactory;
-    protected $table = 'supplier_order_product_size';
+    protected $table = 'supplier_order_product_variationAttribute';
     protected $fillable = [
         'supplier_order_id',
         'supplier_receipt_id',
-        'product_size_id',
+        'product_variationAttribute_id',
         'receipt_id',
         'quantity',
         'price',
         'user_id',
-        'status'
+        'statut'
     ];
 
     public function supplier_orders(){
@@ -28,7 +28,7 @@ class supplier_order_product_size extends Model
         return $this->belongsTo(supplier_receipt::class);
     }
 
-    public function product_sizes(){
-        return $this->belongsTo(product_size::class, 'product_size_id', 'id');
+    public function product_variationAttributes(){
+        return $this->belongsTo(product_variationAttribute::class, 'product_variationAttribute_id', 'id');
     }
 }
