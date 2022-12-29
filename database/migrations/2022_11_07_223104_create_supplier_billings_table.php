@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('account_user_id')->constrained('account_user');
             $table->string('montant');
             $table->string('comment');
-            $table->integer('status');
+            $table->integer('statut');
             $table->timestamps();
         });
     }

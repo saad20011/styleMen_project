@@ -9,4 +9,8 @@ class product_depot extends Model
 {
     use HasFactory;
     protected $table = 'product_depot';
+    protected $fillable = [
+        'product_id',
+        'product_variationAttribute_id'
+    ];
 }

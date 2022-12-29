@@ -18,6 +18,16 @@ class account_user extends Model
     public function users(){
         return $this->belongsTo(User::class);
     }
+    
+    public function types_attributes()
+    {
+        return $this->hasMany(types_attribute::class);
+    }
+    
+    public function attributes()
+    {
+        return $this->hasMany(attribute::class);
+    }
 
     public function accounts(){
         return $this->belongsTo(account::class);
@@ -153,8 +163,8 @@ class account_user extends Model
     public function order_order_product(){
         return $this->belongsToMany(order::class, 'order_products');
     }
-    public function product_size_order_product(){
-        return $this->belongsToMany(product_size::class, 'order_products');
+    public function product_variationAttribute_order_product(){
+        return $this->belongsToMany(product_variationAttribute::class, 'order_products');
     }
     public function offer_order_product(){
         return $this->belongsToMany(offer::class, 'order_products');

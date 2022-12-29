@@ -11,16 +11,15 @@ class Product extends Model
     
     protected $fillable = [
         'reference', 'title','link','price', 'sellingprice','account_user_id','account_id',
-        'photo','photo_dir'
     ];
 
     public function account_users(){
         return $this->belongsTo(account_user::class);
     }
 
-    public function product_size()
+    public function product_variationAttribute()
     {
-        return $this->hasMany(product_size::class);
+        return $this->hasMany(product_variationAttribute::class);
         
     }
 
@@ -28,16 +27,13 @@ class Product extends Model
     {
         return $this->hasMany(product_supplier::class);
         
-  
+
     }
-    public function sizes()
+    public function variationAttributes()
     {
-        return $this->belongsToMany(size::class );
+        return $this->belongsToMany(variationAttribute::class , 'product_variationattribute');
     }
-    public function depots()
-    {
-        return $this->belongsToMany(depot::class, 'product_depot' );
-    }
+
     public function suppliers()
     {
         return $this->belongsToMany(supplier::class );

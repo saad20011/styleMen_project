@@ -11,7 +11,7 @@ use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\SizeController;
+use App\Http\Controllers\AttributesController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PhoneTypeController;
@@ -23,12 +23,15 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ChargeTypeController;
 use App\Http\Controllers\ChargeController;
 use App\Http\Controllers\AccountCarrierCity;
-use App\Http\Controllers\SizeTypeController;
+use App\Http\Controllers\AttributeTypesController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\DeliveryMenController;
 use App\Http\Controllers\SupplierOrderController;
+use App\Http\Controllers\SupplierReceiptController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\VariationAttributesController;
+
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\SubcommentController;
@@ -62,7 +65,7 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('phone', PhoneController::class);
     Route::resource('region', RegionController::class);
     Route::resource('city', CityController::class);
-    Route::resource('size', SizeController::class);
+    Route::resource('attribute', AttributesController::class);
     Route::resource('phone_type', PhoneTypeController::class);
     Route::resource('address', AddressController::class);
     Route::resource('carrier', CarrierController::class);
@@ -73,7 +76,7 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('charge', ChargeController::class);
     Route::resource('carrier_city', AccountCarrierCity::class);
     Route::put('/carrier_cities', [AccountCarrierCity::class, 'update_carrier_cities']);
-    Route::resource('type_size', SizeTypeController::class);
+    Route::resource('attribute_types', AttributeTypesController::class);
     Route::resource('brand', BrandController::class);
     Route::resource('customer', CustomerController::class);
     Route::resource('comments', CommentController::class);
@@ -82,7 +85,9 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('brand_source', SourceController::class);
     Route::resource('delivery_men', DeliveryMenController::class);
     Route::resource('supplier_order', SupplierOrderController::class);
+    Route::resource('supplier_receipt', SupplierReceiptController::class);
     Route::resource('offer', OfferController::class);
+    Route::resource('variation', VariationAttributesController::class);
 
 
     // Route::resource('products', ProductController::class);

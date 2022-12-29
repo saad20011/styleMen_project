@@ -13,7 +13,7 @@ class supplier_order extends Model
         'shipping_date',
         'supplier_id',
         'account_user_id',
-        'status'
+        'statut'
     ];
 
     public function suppliers()
@@ -22,27 +22,27 @@ class supplier_order extends Model
         
     }
 
-    public function supplier_order_product_size()
+    public function supplier_order_product_variationAttribute()
     {
-        return $this->hasMany(supplier_order_product_size::class, 'supplier_order_id', 'id');
+        return $this->hasMany(supplier_order_product_variationAttribute::class, 'supplier_order_id', 'id');
         
     }
 
-    public function product_sizes()
+    public function product_variationAttributes()
     {
-        return $this->belongsToMany(product_size::class, 'supplier_order_product_size');
+        return $this->belongsToMany(product_variationAttribute::class, 'supplier_order_product_variationAttribute');
         
     }
 
     public function users()
     {
-        return $this->belongsToMany(user::class, 'supplier_order_product_size');
+        return $this->belongsToMany(user::class, 'supplier_order_product_variationAttribute');
         
     }
 
     public function supplier_receipts()
     {
-        return $this->belongsToMany(supplier_receipt::class, 'supplier_order_product_size');
+        return $this->belongsToMany(supplier_receipt::class, 'supplier_order_product_variationAttribute');
         
     }
 }
