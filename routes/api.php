@@ -31,7 +31,8 @@ use App\Http\Controllers\SupplierOrderController;
 use App\Http\Controllers\SupplierReceiptController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\VariationAttributesController;
-
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CommentController;
 
 
 /*
@@ -76,6 +77,7 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('attribute_types', AttributeTypesController::class);
     Route::resource('brand', BrandController::class);
     Route::resource('customer', CustomerController::class);
+    Route::resource('comments', CommentController::class);
     Route::resource('source', SourceController::class);
     Route::resource('brand_source', SourceController::class);
     Route::resource('delivery_men', DeliveryMenController::class);

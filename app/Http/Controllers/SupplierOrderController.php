@@ -186,7 +186,6 @@ class SupplierOrderController extends Controller
             if(count($product->product_supplier) >=1)
                 return $product->product_variationAttribute;
         })->collapse();
-
         Validator::extend('even', function ($attribute, $value)use($product_variationAttributes) {
             return $product_variationAttributes->contains('id',$value);
         });
