@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\comment;
+use App\Models\subcomment;
 use App\Models\account;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class CommentController extends Controller
+class SubcommentController extends Controller
 {
     public function index(Request $request)
     {
-        $comments = comment::get();
+        $subcomments = subcomment::get();
 
         return response()->json([
             'statut'=>1,
-            'data'=>$comments,
+            'data'=>$subcomments,
         ]);
     }
 
@@ -31,21 +31,21 @@ class CommentController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'statut' => 'required',
-            'current_statut' => 'required',
-            'post_poned' => 'required',
+            'account_user_id' => 'required',
+            'comment_id' => 'required',
+            'order_change' => 'required',
         ]);
         if($validator->fails()){
             return response()->json([
                 'Validation Error', $validator->errors()
             ]);       
         };
-        $account = User::find(Auth::user()->id)->accounts->first();
-        $request->merge(["account_id"=>$account->id]);
-        $comment = comment::create($request->all());
+        $account_user = User::find(Auth::user()->id)->account_user->first();
+        $request->merge(["account_user_id"=>$account_user->id]);
+        $subcomment = subcomment::create($request->all());
         return response()->json([
             'statut' => 1,
-            'data' => $comment,
+            'data' => $subcomment,
         ]);
         
     }
@@ -58,45 +58,42 @@ class CommentController extends Controller
 
     public function edit($id)
     {
-        $comment = comment::find($id);
+        $subcomment = subcomment::find($id);
 
         return response()->json([
             'statut' => 1,
-            'data' => $comment,
+            'data' => $subcomment,
         ]);
     }
 
 
     public function update(Request $request, $id)
     {
-        $account = User::find(Auth::user()->id)->accounts->first();
         $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'statut' => 'required',
-            'current_statut' => 'required',
-            'post_poned' => 'required',
+            'comment_id' => 'required',
+            'order_change' => 'required',
         ]);
         if($validator->fails()){
             return response()->json([
                 'Validation Error', $validator->errors()
             ]);       
         };
-        $comment = comment::find($id)->update($request->all());
-        $comment=comment::find($id);
+        $subcomment = subcomment::find($id)->update($request->all());
+        $subcomment=subcomment::find($id);
         return response()->json([
             'statut' => 1,
-            'data' => $comment,
+            'data' => $subcomment,
         ]);
-        
     }
 
 
     public function destroy($id)
     {
-        $comment = comment::where('id',$id)->delete();
+        $subcomment = subcomment::where('id',$id)->delete();
         return response()->json([
             'statut' => 'deleted successfuly',
-            'data' => $comment,
+            'data' => $subcomment,
         ]);
     }
 }

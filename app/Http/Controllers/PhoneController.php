@@ -36,6 +36,7 @@ class PhoneController extends Controller
 
     public static function store(Request $request, $local=0, $table=null)
     {
+        $account = User::find(Auth::user()->id)->accounts->first();
         if($local == 0){
             $validator = Validator::make($request->all(), [
                 'phone' => 'required',
@@ -49,7 +50,6 @@ class PhoneController extends Controller
             };
         }
 
-        $account = User::find(Auth::user()->id)->accounts->first();
         $phone = $account->has_phones()->create([
             'phone_type_id' => $request->phone_type_id,
             'title' => $request->phone
