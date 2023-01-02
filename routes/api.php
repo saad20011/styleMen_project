@@ -31,7 +31,6 @@ use App\Http\Controllers\SupplierOrderController;
 use App\Http\Controllers\SupplierReceiptController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\VariationAttributesController;
-
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\SubcommentController;

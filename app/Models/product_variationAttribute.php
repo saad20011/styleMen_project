@@ -28,7 +28,7 @@ class product_variationAttribute extends Model
 
     public function supplier_order_product_variationAttribute()
     {
-        return $this->hasMany(supplier_order_product_variationAttribute::class, 'product_variationAttribute_id', 'supplier_order_product_variationAttribute_id');
+        return $this->hasMany(supplier_order_product_variationAttribute::class, 'product_variationattribute_id');
         
     }
     public function product_depot()

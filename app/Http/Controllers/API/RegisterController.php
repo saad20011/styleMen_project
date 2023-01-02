@@ -159,19 +159,29 @@ class RegisterController extends BaseController
 
     public function login(Request $request)
     {
-        
-        $data = $request->validate([
-            'email' => 'email|required',
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
             'password' => 'required'
         ]);
-
-        if (!auth()->attempt($data)) {
-            return response(['error_message' => 'Incorrect Details,  Please try again']);
+        if($validator->fails()){
+            return response()->json([
+                'statut' => 0,
+                'Validation Error.' => $request->all()
+            ]);       
+        }
+        if (!auth()->attempt($request->all())) {
+            return response()->json([
+                'error_message' => 'Incorrect Details,Please try again']);
         }
 
         $token = auth()->user()->createToken('API Token')->accessToken;
 
-        return response(['user' => auth()->user(), 'token' => $token]);
+        return response()->json([
+            'statut' => 1,
+            'user' => auth()->user(),
+            'token' => $token
+        ]);
 
     }
 }
