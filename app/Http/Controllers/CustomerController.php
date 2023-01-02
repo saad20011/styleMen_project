@@ -27,14 +27,14 @@ class CustomerController extends Controller
 
     }
 
-    public function store(Request $request,$local=0)
+    public static function store(Request $request,$local=0)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'note' => 'required',
-            'facebook' => 'required',
-            'comment' => 'required',
-            'statut' => 'required',
+            'note' => 'nullable',
+            'facebook' => 'nullable',
+            'comment' => 'nullable',
+            'statut' => 'nullable',
             'phones.*.title' => 'required',
             'phones.*.phone_type_id' => 'required',
             'adresse.address' => 'required',
@@ -42,7 +42,9 @@ class CustomerController extends Controller
         ]);
         
         if ($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);        
         }
         
         $customer = customer::create($request->all());

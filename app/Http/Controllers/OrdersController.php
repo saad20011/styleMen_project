@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\customer;
+use Illuminate\Support\Facades\Auth;
+use App\Models\account;
+use App\Models\user;
+use App\Models\address;
+use Validator;
 
 class OrdersController extends Controller
 {
@@ -34,6 +40,37 @@ class OrdersController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'customer.name' => 'required',
+            'customer.phones.*.title' => 'required',
+            'customer.phones.*.phone_type_id' => 'required',
+            'customer.adresse.address' => 'required',
+            'customer.adresse.account_city_id' => 'required',
+            'brand_source_id' => 'required',
+            'payment_method_id' => 'required',
+            'payment_type_id' => 'required',
+            'discount' => 'required',
+            'comment' => 'required',
+            'order_products.*.product_variationattribute_id' => 'required',
+            'order_products.*.offer_id' => 'required',
+            'order_products.*.quantity' => 'required',
+        ]);
+        if ($validator->fails()){
+            return response()->json([
+                'Validation Error', $validator->errors()
+            ]);     
+        }
+        
+        $request_customer=new Request();
+        $request_customer->merge($request->input('customer'));
+        // $request_customer=$request->customer;
+        $customer = CustomerController::store( $request_customer, $local=1);
+        
+        return $customer;
+        //hna ghadi nbda lkhedma 
+        //ghadi ykhassni customer data
+        //ghadi ykhassni orderdata
+        //ghadi ykhassni cityaccount
         //
     }
 
