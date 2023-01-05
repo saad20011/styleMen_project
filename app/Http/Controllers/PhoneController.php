@@ -36,6 +36,7 @@ class PhoneController extends Controller
 
     public static function store(Request $request, $local=0, $table=null)
     {
+        
         $account = User::find(Auth::user()->id)->accounts->first();
         if($local == 0){
             $validator = Validator::make($request->all(), [
