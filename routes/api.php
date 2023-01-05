@@ -35,6 +35,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\SubcommentController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\OrderproductsController;
 
 
 /*
@@ -81,6 +82,7 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('customer', CustomerController::class);
     Route::resource('comments', CommentController::class);
     Route::resource('orders', OrdersController::class);
+    Route::resource('orderproducts', OrderproductsController::class);
     Route::resource('subcomments', SubcommentController::class);
     Route::resource('source', SourceController::class);
     Route::resource('brand_source', SourceController::class);

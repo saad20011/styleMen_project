@@ -8,6 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class order extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'title', 
+        'price', 
+        'shipping_price', 
+        'statut', 
+        'brand_id',
+        'account_id', 
+        'offer_id',
+        'customer_id',
+        'account_city_id',
+        'payment_type_id',
+        'payment_method_id',
+        'brand_source_id',
+        'status_id','code',
+        'carrier_price',
+        'real_carrier_price',
+        'account_user_id',
+        'discount'
+    ];
 
     public function customer(){
         return $this->belongsTo(customer::class);
@@ -46,7 +65,7 @@ class order extends Model
     public function order_products(){
         return $this->hasMany(order_product::class);
     }
-
+    
     public function account_user_order_product(){
         return $this->belongsToMany(account_user::class, 'order_products');
     }
@@ -65,7 +84,7 @@ class order extends Model
         return $this->belongsToMany(account_user::class, 'order_comments');
     }
     public function subcomment_order_comment(){
-        return $this->belongsToMany(subcomment::class, 'order_comments');
+        return $this->belongsToMany(subcomment::class, 'order_comments')->withTimestamps();
     }
     public function status_order_comment(){
         return $this->belongsToMany(status::class, 'order_comments');

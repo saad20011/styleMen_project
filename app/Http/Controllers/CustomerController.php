@@ -46,9 +46,10 @@ class CustomerController extends Controller
                 'Validation Error', $validator->errors()
             ]);        
         }
-        
+        $account = User::find(Auth::user()->id)->accounts->first();
+        $request->merge(['account_id'=>$account->id]);
         $customer = customer::create($request->all());
-       
+       return $customer;
         foreach ($request['phones'] as $key => $phone) {
             $request_phone = new Request();
             $request_phone->merge(['phone'=>$request->input('phones.'.$key.'.title')]);

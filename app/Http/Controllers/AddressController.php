@@ -50,7 +50,7 @@ class AddressController extends Controller
         $account = User::find(Auth::user()->id)->accounts->first();
         if($local == 0){
             $validator = Validator::make($request->all(), [
-                'title' => 'required',
+                'address' => 'required',
                 'account_city_id' => 'required',
                 'account_city_id' => 'exists:account_city,id,account_id,'.$account->id,
 
