@@ -33,7 +33,7 @@ class product_variationAttribute extends Model
     }
     public function product_depot()
     {
-        return $this->hasMany(product_depot::class);
+        return $this->hasMany(product_depot::class, 'product_variationAttribute_id' ,'id');
         
     }
     public function depots()

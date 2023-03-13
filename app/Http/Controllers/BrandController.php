@@ -10,23 +10,54 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\BrandSourceController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\OfferController;
 
 class BrandController extends Controller
 {
-    public function index(Request $request)
+    public static function index(Request $request, $local=0, $columns=false, $paginate=false)
     {
+        $filters = OfferController::filterColumns($request->toArray(), ['title', 'website', 'email']);
         $account = User::find(Auth::user()->id)->accounts->first();
-        $brands = account::find($account->id)->brands()->paginate(20);
-        foreach($brands as $brand){
-            $brand->sources = brand::find($brand->id)
-                ->sources;
-            $brand->images = brand::find($brand->id)->images;
-        }
 
-        return response()->json([
-            'statut' =>$account->id,
-            'brands ' =>$brands,
-        ]);
+        $brands = account::with(['brands' => function($query) use($filters){
+            $query->with('images');                                        
+                // filtering by search
+                if($filters['search'] == null){
+                    //filtering by columns
+                    if($filters['filters']['title'] != null){
+                        $query->where('title', 'like', "%{$filters['filters']['title']}%");
+                    }
+                    if($filters['filters']['website'] != null){
+                        $query->where('website', 'like', "%{$filters['filters']['website']}%");
+                    }
+                    if($filters['filters']['email'] != null){
+                        $query->where('email', 'like', "%{$filters['filters']['email']}%");
+                    }
+                }else{
+                    $query->where('title', 'like', "%{$filters['search']}%" )
+                        ->orWhere('website', 'like', "%{$filters['search']}%" )
+                        ->orWhere('email', 'like', "%{$filters['search']}%" );
+                }
+                // filtering date
+                if($filters['startDate'] != null and $filters['startDate'] != null){
+                    $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']]);
+                }                                    
+        }])->find($account->id)->brands->map(function($item)use($columns){
+            $image = collect($item->images->first())->only('photo', 'photo_dir');
+            return collect($item->only($columns == false?['id', 'title', 'website', 'email', 'created_at']:$columns))->put('image',$image);
+        });
+        $dataPagination = OfferController::getPagination($brands, intval($filters['pagination']['per_page']), intval($filters['pagination']['current_page']));
+        if($local == 1){
+            if($paginate == true){
+                return $dataPagination;
+            }else{
+                return $brands->toArray();
+            }
+        };
+
+        return response()->json(
+            $dataPagination
+        );
     }
 
     public function create(Request $request)
@@ -37,7 +68,6 @@ class BrandController extends Controller
             'statut' => 1,
             'data' => $data,
         ]);
-
     }
 
     public static function store_brand($account_id, $columns)

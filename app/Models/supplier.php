@@ -49,10 +49,17 @@ class supplier extends Model
     }
     public function products()
     {
-        return $this->belongsToMany(product::class, 'product_supplier');
+        return $this->belongsToMany(product::class, 'product_supplier')
+        ->withPivot('status');
         
     }
-
+    public function activeProducts()
+    {
+        return $this->belongsToMany(product::class, 'product_supplier')
+            ->wherePivotIn('status', [1])
+            ->withPivot('price');
+        
+    }
     public function supplier_billings()
     {
         return $this->hasMany(supplier_billing::class);

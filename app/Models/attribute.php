@@ -15,9 +15,9 @@ class attribute extends Model
         'types_attribute_id' 
     ];
 
-    public function type_size()
+    public function type_attribute()
     {
-        return $this->belongsTo(customer::class);
+        return $this->belongsTo(types_attribute::class, 'types_attribute_id', 'id');
     }
 
     public function product_variationAttribute()

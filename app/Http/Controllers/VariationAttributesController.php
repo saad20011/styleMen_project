@@ -11,14 +11,64 @@ use App\Models\account;
 use App\Models\attribute;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class VariationAttributesController extends Controller
 {
 
-    public function index()
+    public static function index(Request $request, $local=0,$paginate=false, $productVar =null)
     {
-        //
+        $filters = HelperFunctions::filterColumns($request->toArray(), ['reference', 'title', 'shipping_price', 'attributes', 'products', 'offers']);
+        $account_user = User::find(Auth::user()->id)->account_user->first();
+        $accounts_users = account::find($account_user->account_id)->account_user->pluck('id')->toArray();
+        $variationAttributes = variationattribute::where(['attribute_id' => null , 'variationattribute_id' => null])
+            ->whereIn('account_user_id' , $accounts_users)
+            ->with(['attributes'=>function($query){
+                $query->with('type_attribute');
+            },'products'])->get()
+            ->map(function($variation) use($filters, $productVar){
+                $variation->products = $products = $variation->products->map(function($product){
+                    return $product->only('id', 'title');
+                });
+                if($productVar !=null){
+                    $variation->product_variationAttributes = $product_variationAttributes = $variation->product_variationAttributes->map(function($product_variationAttribute) use($productVar){
+                        if($product_variationAttribute->statut == 1 and $product_variationAttribute->product_id == $productVar){
+                            return $product_variationAttribute->only('id', 'product_id', 'statut');
+                        };
+                    })->filter();                    
+                }
+
+                $variation->attributes = $attributes = $variation->attributes->map(function($attr){
+                    return ['id'=>$attr->id, 'title'=>$attr->title,
+                                'typeAttributeId'=>$attr->type_attribute->id,
+                                'typeAttributeTitle'=>$attr->type_attribute->title];
+                });
+                $attributesExisting = HelperFunctions::filterExisting($filters['filters']['attributes'], $attributes->pluck('id'));
+                $productsExisting = HelperFunctions::filterExisting($filters['filters']['products'], $products->pluck('id'));
+                if($productsExisting and $attributesExisting ){
+                    if($productVar != null){
+                        if(count($product_variationAttributes)>0){
+                            return $variation->attributes;
+                        }
+                    }else{
+                        return $variation->attributes;
+                    }
+                    
+                }
+            })->collapse()->unique('id')->values()->sortBy('typeAttributeId');;
+        $dataPagination = HelperFunctions::getPagination($variationAttributes, $filters['pagination']['per_page'], $filters['pagination']['current_page']);
+
+        if($local == 1){
+            if($paginate == true){
+                return $dataPagination;
+            }else{
+                return $variationAttributes->toArray();
+            }
+        };
+        return response()->json([
+            'statut' => 1,
+            'data' => $variationAttributes
+        ]);
+
     }
 
 
@@ -28,11 +78,10 @@ class VariationAttributesController extends Controller
     }
 
 
-    public function store(Request $request, $local=0, $validation=1)
+    public static function store(Request $request, $local=0, $validation=1)
     {
         $account_user = User::find(Auth::user()->id)->account_user->first();
         $accounts_users = account::find($account_user->account_id)->account_user->pluck('id')->toArray();
-        // dd($request->all());
         if($validation == 1){
             $validator = Validator::make($request->all(), [
                 'variations.*' => ['required',
@@ -68,7 +117,7 @@ class VariationAttributesController extends Controller
         };
         $attributes = collect($request->variations)->pluck('elements')->toArray();
 
-        $cases = $this->generateCases($attributes);
+        $cases = HelperFunctions::generateCases($attributes);
         $variationAttributes = variationattribute::with('variationAttributes')
             ->where(['attribute_id' => null , 'variationattribute_id' => null])
             ->get('id')
@@ -155,5 +204,24 @@ class VariationAttributesController extends Controller
         }
         return $cases;
       }
-    
+      public static function variationFilters(Request $request, $local=0,$filters = 0)
+      {
+          $account_user = User::find(Auth::user()->id)->account_user->first();
+          $accounts_users = account::find($account_user->account_id)->account_user->pluck('id')->toArray();
+          $variationAttributes = variationattribute::where(['attribute_id' => null , 'variationattribute_id' => null])
+              ->whereIn('account_user_id' , $accounts_users)
+              ->with('attributes')->get()
+              ->map(function($variation){
+                  $attributes = $variation->attributes->map(function($attr){
+                      return $attr->title;
+                  })->toArray();
+                  return ['id'=>$variation->id, "title"=>implode("-", $attributes)];
+              });
+          if($local == 1) return $variationAttributes;
+          return response()->json([
+              'statut' => 1,
+              'data' => $variationAttributes
+          ]);
+  
+      }
 }

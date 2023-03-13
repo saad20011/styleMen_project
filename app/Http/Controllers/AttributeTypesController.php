@@ -10,20 +10,30 @@ use App\Models\account;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\HelperFunctions;
 
 class AttributeTypesController extends Controller
 {
 
-    
-    public function index(Request $request)
+    public static function index(Request $request, $local=1)
     {
+        $filters = HelperFunctions::filterColumns($request->toArray(), ['reference', 'title', 'shipping_price', 'suppliers', 'variations', 'offers']);
         $account_user = User::find(Auth::user()->id)->account_user->first();
         $accounts_users = account::find($account_user->account_id)->account_user->pluck('id')->toArray();
-        $types_attribute = types_attribute::whereIn('account_user_id',$accounts_users)->get();
-
+        $types_attribute = types_attribute::whereIn('account_user_id',$accounts_users)
+            ->with('attributes')->get()
+            ->map(function($typeAttr){
+                $attributes = $typeAttr->attributes->map(function($attr)use($typeAttr){
+                    return ['id'=>$attr->id, 'title'=>$attr->title,
+                                'typeAttributeId'=>$typeAttr->id, 'typeAttributeTitle'=>$typeAttr->title];
+                });
+                return $attributes;
+            })->collapse();
+        $dataPagination = HelperFunctions::getPagination($types_attribute, intval($filters['pagination']['per_page']), intval($filters['pagination']['current_page']));
+        if($local==1) return $dataPagination;
         return response()->json([
             'statut' => 1,
-            'data' => $types_attribute,
+            'data' => $dataPagination,
         ]);
     }
 

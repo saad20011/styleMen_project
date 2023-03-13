@@ -10,7 +10,7 @@ class Product extends Model
     use HasFactory;
     
     protected $fillable = [
-        'reference', 'title','link','price', 'sellingprice','account_user_id','account_id',
+        'reference','statut', 'title','link','price', 'sellingprice','account_user_id','account_id',
     ];
 
     public function account_users(){
@@ -36,14 +36,30 @@ class Product extends Model
 
     public function suppliers()
     {
-        return $this->belongsToMany(supplier::class );
+        return $this->belongsToMany(supplier::class)
+            ;
+        
     }
 
+    public function activeSuppliers()
+    {
+        return $this->belongsToMany(supplier::class)
+            ->wherePivotIn('status', [1])
+            ->withPivot('price');
+
+    }
     public function offers()
     {
         return $this->belongsToMany(offer::class, 'product_offer' );
     }
-
+    public function categories()
+    {
+        return $this->belongsToMany(categorie::class, 'account_product', 'product_id', 'category_id' );
+    }
+    public function depots()
+    {
+        return $this->belongsToMany(depot::class, 'product_depot' );
+    }
     public function account_product()
     {
         return $this->hasMany(account_product::class);
@@ -65,9 +81,9 @@ class Product extends Model
     {
         return $this->hasMany(image::class);
     }
+    
     public function imageables()
     {
-
         return $this->hasMany(imageable::class, 'imageable_id', 'id');
     }
 }

@@ -20,6 +20,10 @@ class image extends Model
     {
         return $this->morphedByMany(account::class, 'imageable');
     }
+    public function imageables()
+    {
+        return $this->hasMany(imageable::class, 'image_id', 'id');
+    }
 
     public function users()
     {

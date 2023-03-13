@@ -9,7 +9,7 @@ class product_offer extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'product_id',
+        'account_product_id',
         'offer_id',
     ];
     protected $table = 'product_offer';
@@ -19,6 +19,7 @@ class product_offer extends Model
     }
 
     public function offers(){
-        return $this->belongsTo(offer::class);
+        return $this->belongsTo(offer::class, 'offer_id', 'id');
     }
+
 }

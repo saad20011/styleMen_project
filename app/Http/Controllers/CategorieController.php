@@ -6,21 +6,49 @@ use Illuminate\Http\Request;
 use App\Models\categorie;
 use App\Models\User;
 use App\Models\account_user;
+use App\Models\account;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 class CategorieController extends Controller
 {
     public $account_user ;
 
-
-
-    public function index(Request $request)
+    public static function index(Request $request, $local=0, $columns=['id', 'title', 'products'], $paginate=1)
     {
         $account_user = User::find(Auth::user()->id)->account_user->first();
-        $categories = account_user::find($account_user->id)->categories;
-
-        return response()->json([
-            'categories '=>$categories,
+        $accounts_users = account::find($account_user->account_id)->account_user->pluck('id')->toArray();
+        $filters = OfferController::filterColumns($request->toArray(), ['reference', 'title', 'products', 'suppliers', 'variations', 'offers']);
+        $categories = categorie::whereIn('account_user_id' , $accounts_users)
+        ->where(function($query) use ($filters) {
+                if($filters['search'] == null){
+                    //filtering by columns
+                    if($filters['filters']['title'] != null){
+                        $query->where('title', 'like', "%{$filters['filters']['title']}%" );
+                    }
+                }else{
+                    $query->where('title', 'like', "%{$filters['search']}%" );
+                }
+            })
+            ->with(['products'])->get()
+            ->map(function($category) use($columns, $filters){
+                $category->products = $products = $category->products->map(function($product){
+                    return $product->only('id', 'title');
+                });
+                $productsExisting = HelperFunctions::filterExisting($filters['filters']['products'], $products->pluck('id'));
+                if($productsExisting){
+                    return $category->only($columns);
+                }
+    })->filter()->values();
+    $dataPagination = HelperFunctions::getPagination($categories, intval($filters['pagination']['per_page']), intval($filters['pagination']['current_page']));
+    if($local == 1){
+        if($paginate == false){
+            return $categories->toArray();
+        }
+        return $dataPagination;
+    };
+    return response()->json([
+            'statut' => 1,
+            'data' => $dataPagination,
         ]);
     }
 

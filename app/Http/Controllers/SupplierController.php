@@ -5,29 +5,82 @@ use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\AddressController;
 use Illuminate\Http\Request;
 use App\Models\supplier;
-use App\Models\address;
 use App\Models\account;
 use App\Models\phone_type;
-use App\Models\phone;
 use App\Models\city;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HelperFunctions;
 
 class SupplierController extends Controller
 {
 
-    public function index(Request $request)
+    public static function index(Request $request, $local=0, $columns=['id', 'title', 'addresses', 'phones', 'products'], $paginate=true)
     {
+        $filters = HelperFunctions::filterColumns($request->toArray(), ['title', 'addresse', 'phone', 'products']);
+        
         $account = User::find(Auth::user()->id)->accounts->first();
-        $suppliers = account::find($account->id)->suppliers;
-        foreach($suppliers as $supplier){
-            $supplier->addresses = supplier::find($supplier->id)->addresses;
-            $supplier->phones = supplier::find($supplier->id)->phones;
-        }
+        $suppliers = account::with(['suppliers'=>function($query) use($filters){
+            if($filters['search'] == null){
+                if($filters['filters']['title'] != null){
+                    $query ->where('title', 'like', "%{$filters['filters']['title']}%" );
+                }
+            }else{
+                $query->where('title', 'like', "%{$filters['search']}%" );
+            }
+            $query->with('activeProducts');
+            $query->with(['addresses'=> function($query) use($filters){
+                if($filters['filters']['addresse'] != null){
+                    $query->Where('title', 'like', "%{$filters['filters']['addresse']}%" );
+                }
+            }]);
+            $query->with(['phones'=> function($query) use($filters){
+                if($filters['filters']['phone'] != null){
+                    $query->Where('title', 'like', "%{$filters['filters']['phone']}%" );
+                }
+            }]);
+        }])->find($account->id)->suppliers
+            ->map(function($supplier) use($filters, $columns){
+                $supplier->price = 0;
+                $supplier->products = $products = $supplier->activeProducts->map(function($product){
+                        $supplier_price =$product->pivot->price;
+                        return ['id'=>$product->id, 'title' => $product->title, 'price' => $supplier_price];
+                });
+                   if($supplier->id == 7){
+                        dd( $products->firstWhere('id', $filters['filters']['products'][0]), $products);
+                    }      $productsExisting = HelperFunctions::filterExisting($filters['filters']['products'], $products->pluck('id'));
+ 
+                if($productsExisting== true and count($filters['filters']['products'])>0){
+
+                    $supplier->price = $products->firstWhere('id', $filters['filters']['products'][0])['price'];
+                }
+                $supplier->addresses = $addresses = $supplier->addresses->map(function($addresse){
+                    return $addresse->only('id', 'title');
+                });
+                $supplier->phones = $phones = $supplier->phones->map(function($phone){
+                    return $phone->only('id', 'title');
+                });
+
+                $add = $filters['filters']['addresse'] != null ?  $addresses->count() > 0 ? true : false : true;
+                $pho = $filters['filters']['phone'] != null ?  $phones->count() > 0 ? true : false : true;
+                $pro = $filters['filters']['products'] != null ?  $products->count() > 0 ? true : false : true;
+                if($add and $pho and $productsExisting){
+                    return $supplier->only($columns);
+                }
+            })->filter()->values();
+
+            $dataPagination = HelperFunctions::getPagination($suppliers, $filters['pagination']['per_page'], $filters['pagination']['current_page']);
+            if($local == 1){
+                if($paginate == true){
+                    return $dataPagination;
+                }else{
+                    return $suppliers->toArray();
+                }
+            };    
         return response()->json([
             'statut' => 1,
-            'data' => $suppliers,
+            'data' => $dataPagination,
         ]);
     }
 

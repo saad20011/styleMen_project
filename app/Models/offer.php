@@ -12,10 +12,15 @@ class offer extends Model
         'title', 'price', 'shipping_price', 'statut', 'brand_id','account_id', 'offer_id'
     ];
 
+    public function offers(){
+        return $this->hasMany(offer::class );
+    }
+    
     public function brands()
     {
-        return $this->belongsTo(brand::class);
+        return $this->hasMany(brand::class, 'id', 'brand_id');
     }
+
     public function accounts()
     {
         return $this->belongsTo(account::class);

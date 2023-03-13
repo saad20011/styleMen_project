@@ -35,6 +35,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\SubcommentController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\ImageController;
 
 
 /*
@@ -55,7 +56,7 @@ Route::post('register_new_account', [RegisterController::class, 'register_new_ac
 Route::post('login', [RegisterController::class, 'login']);
 // Route::resource('phoneType', PhoneTypeController::class);
 
-Route::middleware('auth:api')->group( function () {
+Route::middleware(['auth:api' , 'VerifyDomain'])->group( function () {
     Route::post('register_new_user', [RegisterController::class, 'register_new_user']);
     Route::resource('product', ProductController::class);
     Route::resource('roles', RoleController::class);
@@ -75,6 +76,7 @@ Route::middleware('auth:api')->group( function () {
     Route::resource('charge_type', ChargeTypeController::class);
     Route::resource('charge', ChargeController::class);
     Route::resource('carrier_city', AccountCarrierCity::class);
+    Route::resource('image', ImageController::class);
     Route::put('/carrier_cities', [AccountCarrierCity::class, 'update_carrier_cities']);
     Route::resource('attribute_types', AttributeTypesController::class);
     Route::resource('brand', BrandController::class);

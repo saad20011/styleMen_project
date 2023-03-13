@@ -18,8 +18,14 @@ class variationattribute extends Model
     public function variationAttributes(){
         return $this->hasMany( variationattribute::class, 'variationAttribute_id', 'id');
     }
+    public function product_variationAttributes(){
+        return $this->hasMany( product_variationAttribute::class, 'variationAttribute_id', 'id');
+    }
 
     public function attributes(){
         return $this->belongsToMany( attribute::class, 'variationAttributes');
+    }
+    public function products(){
+        return $this->belongsToMany( product::class, 'product_variationattribute');
     }
 }

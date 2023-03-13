@@ -27,7 +27,10 @@ class account extends Model
         return $this->belongsToMany(carrier::class, 'account_carrier');
         
     }
-
+    public function categories()
+    {
+        return $this->belongsToMany(categorie::class, 'account_product', 'account_id', 'category_id' );
+    }
     public function has_carriers()
     {
         return $this->hasMany(carrier::class);
@@ -40,7 +43,8 @@ class account extends Model
     }
     public function products()
     {
-        return $this->belongsToMany(product::class, 'account_product');
+        return $this->belongsToMany(product::class, 'account_product')
+            ->withPivot('id');
     }
 
     public function brand_offers()

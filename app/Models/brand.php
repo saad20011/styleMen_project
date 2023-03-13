@@ -37,7 +37,8 @@ class brand extends Model
     public function images()
     {
         return $this->morphToMany(image::class, 'imageable')
-            ->wherePivot('statut', 1);
+            ->wherePivotIn('statut', [1,2])
+            ->withPivot('statut');
     }
     public function imageables()
     {

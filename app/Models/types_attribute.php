@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class types_attribute extends Model
 {
     use HasFactory;
+    protected $table = 'types_attribute';
     protected $fillable = [
         'title',
         'description',

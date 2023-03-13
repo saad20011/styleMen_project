@@ -26,15 +26,21 @@ class account_product extends Model
 
     public function offers()
     {
-        return $this->belongsToMany(offer::class, 'product_offer');
+        return $this->belongsToMany(offer::class, 'product_offer', 'account_product_id', 'offer_id');
+    }
+
+    public function activeOffers()
+    {
+        return $this->belongsToMany(offer::class, 'product_offer', 'account_product_id', 'offer_id')
+            ->wherePivotIn('status', [1]);
     }
 
     public function product_offer()
     {
-        return $this->hasMany(product_offer::class);
+        return $this->hasMany(product_offer::class, );
     }
     public function products()
     {
-        return $this->belongsTo(product::class);
+        return $this->hasMany(product::class, 'id', 'product_id');
     }
 }

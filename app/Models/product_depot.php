@@ -13,4 +13,15 @@ class product_depot extends Model
         'product_id',
         'product_variationAttribute_id'
     ];
+
+    public function depots()
+    {
+        return $this->belongsTo(depot::class, 'depot_id','id' );
+        
+    }
+    public function product_variationAttributes()
+    {
+        return $this->belongsTo(product_variationAttribute::class,'product_variationAttribute_id','id');
+        
+    }
 }

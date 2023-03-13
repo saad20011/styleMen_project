@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('account_city_id')->constrained('account_city'); //new
-            $table->string('address');
+            $table->string('title');
             $table->integer('statut')->length(11)->default(1);  
             $table->timestamps();
         });
